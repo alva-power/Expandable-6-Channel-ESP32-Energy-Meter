@@ -31,8 +31,8 @@
 #include "config.h"
 #include "esp_wifi.h"
 #include "energy_meter.h"
-
-WiFiClient espClient;                 // Create client for MQTT
+#include "WiFiClientSecure.h"
+WiFiClientSecure espClient;                 // Create client for MQTT
 PubSubClient mqttclient(espClient);   // Create client for MQTT
 
 long lastMqttReconnectAttempt = 0;
@@ -52,8 +52,11 @@ static int mqtt_connection_error_count = 0;
 boolean mqtt_connect()
 {
   DBUGS.println("MQTT Connecting...");
-
-  if (espClient.connect(mqtt_server.c_str(), 1883, MQTT_TIMEOUT * 1000) != 1)
+  espClient.setInsecure(); // allow self-signed certificates
+  
+  Serial.print("MQTT Server: ");
+  Serial.println(mqtt_server);
+  if (espClient.connect(mqtt_server.c_str(), 8883, MQTT_TIMEOUT * 1000) != 1)
   {
      DBUGS.println("MQTT connect timeout.");
      return (0);
@@ -64,15 +67,21 @@ boolean mqtt_connect()
   mqttclient.setBufferSize(MAX_DATA_LEN + 200);
 
 #ifdef ESP32
-  String strID = String((uint32_t)(ESP.getEfuseMac() >> 16), HEX);
+  // String strID = String((uint32_t)(ESP.getEfuseMac() >> 16), HEX);
+  String strID = "EMON_ESP_1";
 #else
-  String strID = String(ESP.getChipId());
+  // String strID = String(ESP.getChipId());
+  String strID = "EMON_ESP_1";
 #endif
 
   if (mqtt_user.length() == 0) {
     //allows for anonymous connection
     mqttclient.connect(strID.c_str()); // Attempt to connect
   } else {
+    Serial.print("MQTT User: ");
+    Serial.println(mqtt_user);
+    Serial.print("MQTT Pass: ");  
+    Serial.println(mqtt_pass);
     mqttclient.connect(strID.c_str(), mqtt_user.c_str(), mqtt_pass.c_str()); // Attempt to connect
   }
 
@@ -167,14 +176,23 @@ void mqtt_publish(const char * data)
 void mqtt_loop()
 {
   if (!mqttclient.connected()) {
+
     long now = millis();
     // try and reconnect continuously for first 5s then try again once every 10s
     if ( (now < 5000) || ((now - lastMqttReconnectAttempt)  > 10000) ) {
       lastMqttReconnectAttempt = now;
+      Serial.println("MQTT reconnecting...");
       if (mqtt_connect()) { // Attempt to reconnect
         lastMqttReconnectAttempt = 0;
         mqtt_connection_error_count = 0;
+        Serial.println("MQTT reconnected");
+        Serial.print("MQTT Status: ");
+        Serial.println(mqttclient.state());
+        bool p_status = mqttclient.publish(mqtt_topic.c_str(), "reconnected"); // Once reconnected, publish an announcement..
+        Serial.print("MQTT Publish Status: ");
+        Serial.println(p_status);
       } else {
+        Serial.println("MQTT not reconnected");
         mqtt_connection_error_count ++;
         if (mqtt_connection_error_count > 10) {
 #ifdef ESP32

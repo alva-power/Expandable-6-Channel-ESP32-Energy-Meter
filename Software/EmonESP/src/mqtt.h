@@ -38,7 +38,7 @@
 #include "emonesp.h"
 
 #ifndef MQTT_TIMEOUT
-#define MQTT_TIMEOUT 3
+#define MQTT_TIMEOUT 10
 #endif
 
 // -------------------------------------------------------------------
