@@ -31,8 +31,8 @@
 #include "config.h"
 
 // Wifi Network Strings
-String esid = "";
-String epass = "";
+String esid = "Aiprofessionls";
+String epass = "IH@j@b5!";
 
 // Web server authentication (leave blank for none)
 String www_username = "";
@@ -46,10 +46,10 @@ String emoncms_apikey = "";
 String emoncms_fingerprint = "";
 
 // MQTT Settings
-String mqtt_server = "";
-String mqtt_topic = "";
-String mqtt_user = "";
-String mqtt_pass = "";
+String mqtt_server = "EMONESPHUB1.azure-devices.net";
+String mqtt_topic = "devices/ESP_EMON/messages/events/";
+String mqtt_user = "EMONESPHUB1.azure-devices.net/ESP_EMON/?api-version=2021-04-12";
+String mqtt_pass = "SharedAccessSignature sr=EMONESPHUB1.azure-devices.net%2Fdevices%2FESP_EMON&sig=9lgmpZ6J8Sx%2BtkNdzDv85FeSb6slZA9ow9IyTxYKWGw%3D&se=100001736190509";
 String mqtt_feed_prefix = "";
 
 // Calibration Settings
