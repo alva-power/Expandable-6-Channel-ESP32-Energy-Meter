@@ -40,6 +40,11 @@ The data flows through the following steps:
 
 ### Viewing Messages in the IoT Hub
 
-*   **Azure CLI:**
-    *   Use the `az iot hub monitor-events --hub-name <IoTHubName> --device-id <DeviceID>` command to monitor device messages in realtime.
-    *   For now the messages are not stored in any database.
+*   **Cosmos DB:**
+    *   Search `emonespdb` in Azure, and open it.
+    *   You will see a containers table.
+    *   Click on `emonespmqttmesssages`.
+    *   Then click on `emonespmqttdb`, then on `emonespmqttmesssages`, and then on `Items`.
+    *   There you will see all MQTT events and messges.
+    *   Click on any of them, and you will see the data.
+    *   The message is in the `Body` field of data, and it base64 encoded, which needs to be decoded to UTF-8
