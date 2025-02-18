@@ -231,7 +231,7 @@ void energy_meter_loop()
       /* apparent power is always positive */
       vaPowerCT[j] *= fabs(pow_mul[i*NUM_INPUTS+j] * cur_mul[i*NUM_INPUTS+j]);
 
-      Serial.println("I" + String(i) + "_" + String(j) + ":" + String(currentCT[j]) + "A");
+      // Serial.println("I" + String(i) + "_" + String(j) + ":" + String(currentCT[j]) + "A");
 
       if (i != 0 || j != 0)
       {
@@ -262,7 +262,7 @@ void energy_meter_loop()
       dtostrf(vaPowerCT[j], 2, 2, measurement);
       strcat(result, measurement);
     }
-    Serial.println("");
+    // Serial.println("");
   }
   strcpy(result_json, "]}");
 

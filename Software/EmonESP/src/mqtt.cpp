@@ -79,7 +79,11 @@ boolean mqtt_connect()
   // espClient.setInsecure(); // allow self-signed certificates
   espClient.setCACert(root_ca);
   Serial.print("MQTT Server: ");
+  mqtt_server = "EMONESPHUB1.azure-devices.net";
   Serial.println(mqtt_server);
+  
+  Serial.print("MQTT Topic: ");
+  Serial.println(mqtt_topic);
   if (espClient.connect(mqtt_server.c_str(), 8883, MQTT_TIMEOUT * 1000) != 1)
   {
      DBUGS.println("MQTT connect timeout.");
@@ -93,6 +97,9 @@ boolean mqtt_connect()
 #ifdef ESP32
   // String strID = String((uint32_t)(ESP.getEfuseMac() >> 16), HEX);
   String strID = "ESP_EMON";
+  // Device ID is device_wifi mac address
+  // String wifiMac = WiFi.macAddress().replace(":", "_");
+  
 #else
   // String strID = String(ESP.getChipId());
   String strID = "ESP_EMON";
@@ -102,11 +109,15 @@ boolean mqtt_connect()
     //allows for anonymous connection
     mqttclient.connect(strID.c_str()); // Attempt to connect
   } else {
+    Serial.print("MQTT Device: ");
+    Serial.println(mqtt_device_id);
     Serial.print("MQTT User: ");
     Serial.println(mqtt_user);
     Serial.print("MQTT Pass: ");  
     Serial.println(mqtt_pass);
-    mqttclient.connect(strID.c_str(), mqtt_user.c_str(), mqtt_pass.c_str()); // Attempt to connect
+    mqtt_server = "EMONESPHUB1.azure-devices.net";
+    // mqttclient.setServer(mqtt_server.c_str(), 8883);
+    mqttclient.connect(mqtt_device_id.c_str(), mqtt_user.c_str(), mqtt_pass.c_str()); // Attempt to connect
   }
 
   if (mqttclient.state() == 0)

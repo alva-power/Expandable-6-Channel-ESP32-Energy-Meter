@@ -58,6 +58,7 @@ extern String emoncms_apikey;
 extern String emoncms_fingerprint;
 
 // MQTT Settings
+extern String mqtt_device_id;
 extern String mqtt_server;
 extern String mqtt_topic;
 extern String mqtt_user;

@@ -43,6 +43,7 @@
 #include "input.h"
 #include "emoncms.h"
 #include "mqtt.h"
+#include "BluetoothProvisioning.h"
 
 #ifdef ENABLE_ENERGY_METER
 #include "energy_meter.h"
@@ -68,12 +69,16 @@ void setup() {
   config_load_settings();
   delay(200);
 
+  setup_bluetooth();
+
   // Initialise the WiFi
-  wifi_setup();
+  // wifi_setup();
+  delay(200);
+
   delay(200);
 
   // Bring up the web server
-  web_server_setup();
+  // web_server_setup();
   delay(200);
 
 #ifdef ENABLE_WDT
@@ -102,8 +107,9 @@ void loop()
 #ifdef ENABLE_WDT
   feedLoopWDT();
 #endif
-  web_server_loop();
-  wifi_loop();
+  // web_server_loop();
+  // wifi_loop();
+  loop_bluetooth();
 
 #ifdef ENABLE_WEB_OTA
   ota_loop();
@@ -128,6 +134,7 @@ void loop()
     if (mqtt_server != 0) {
       mqtt_loop();
       if (gotInput) {
+        Serial.println("Publishing data to mqtt");
         mqtt_publish(input);
       }
     }
