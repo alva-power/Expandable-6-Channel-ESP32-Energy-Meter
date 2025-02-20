@@ -32,8 +32,8 @@
 #include "esp_wifi.h"
 #include "energy_meter.h"
 #include "WiFiClientSecure.h"
-WiFiClientSecure espClient;                 // Create client for MQTT
-PubSubClient mqttclient(espClient);   // Create client for MQTT
+WiFiClientSecure espClient;         // Create client for MQTT
+PubSubClient mqttclient(espClient); // Create client for MQTT
 
 long lastMqttReconnectAttempt = 0;
 int clientTimeout = 0;
@@ -44,30 +44,29 @@ char input_json[MAX_DATA_LEN];
 static char mqtt_topic_prefix[128] = "";
 static char mqtt_data[64] = "";
 static int mqtt_connection_error_count = 0;
-const char * root_ca = 
-"-----BEGIN CERTIFICATE-----\n"
-"MIIDjjCCAnagAwIBAgIQAzrx5qcRqaC7KGSxHQn65TANBgkqhkiG9w0BAQsFADBh\n"
-"MQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3\n"
-"d3cuZGlnaWNlcnQuY29tMSAwHgYDVQQDExdEaWdpQ2VydCBHbG9iYWwgUm9vdCBH\n"
-"MjAeFw0xMzA4MDExMjAwMDBaFw0zODAxMTUxMjAwMDBaMGExCzAJBgNVBAYTAlVT\n"
-"MRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5j\n"
-"b20xIDAeBgNVBAMTF0RpZ2lDZXJ0IEdsb2JhbCBSb290IEcyMIIBIjANBgkqhkiG\n"
-"9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuzfNNNx7a8myaJCtSnX/RrohCgiN9RlUyfuI\n"
-"2/Ou8jqJkTx65qsGGmvPrC3oXgkkRLpimn7Wo6h+4FR1IAWsULecYxpsMNzaHxmx\n"
-"1x7e/dfgy5SDN67sH0NO3Xss0r0upS/kqbitOtSZpLYl6ZtrAGCSYP9PIUkY92eQ\n"
-"q2EGnI/yuum06ZIya7XzV+hdG82MHauVBJVJ8zUtluNJbd134/tJS7SsVQepj5Wz\n"
-"tCO7TG1F8PapspUwtP1MVYwnSlcUfIKdzXOS0xZKBgyMUNGPHgm+F6HmIcr9g+UQ\n"
-"vIOlCsRnKPZzFBQ9RnbDhxSJITRNrw9FDKZJobq7nMWxM4MphQIDAQABo0IwQDAP\n"
-"BgNVHRMBAf8EBTADAQH/MA4GA1UdDwEB/wQEAwIBhjAdBgNVHQ4EFgQUTiJUIBiV\n"
-"5uNu5g/6+rkS7QYXjzkwDQYJKoZIhvcNAQELBQADggEBAGBnKJRvDkhj6zHd6mcY\n"
-"1Yl9PMWLSn/pvtsrF9+wX3N3KjITOYFnQoQj8kVnNeyIv/iPsGEMNKSuIEyExtv4\n"
-"NeF22d+mQrvHRAiGfzZ0JFrabA0UWTW98kndth/Jsw1HKj2ZL7tcu7XUIOGZX1NG\n"
-"Fdtom/DzMNU+MeKNhJ7jitralj41E6Vf8PlwUHBHQRFXGU7Aj64GxJUTFy8bJZ91\n"
-"8rGOmaFvE7FBcf6IKshPECBV1/MUReXgRPTqh5Uykw7+U0b6LJ3/iyK5S9kJRaTe\n"
-"pLiaWN0bfVKfjllDiIGknibVb63dDcY3fe0Dkhvld1927jyNxF1WW6LZZm6zNTfl\n"
-"MrY=\n"
-"-----END CERTIFICATE-----\n";
-
+const char *root_ca =
+    "-----BEGIN CERTIFICATE-----\n"
+    "MIIDjjCCAnagAwIBAgIQAzrx5qcRqaC7KGSxHQn65TANBgkqhkiG9w0BAQsFADBh\n"
+    "MQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3\n"
+    "d3cuZGlnaWNlcnQuY29tMSAwHgYDVQQDExdEaWdpQ2VydCBHbG9iYWwgUm9vdCBH\n"
+    "MjAeFw0xMzA4MDExMjAwMDBaFw0zODAxMTUxMjAwMDBaMGExCzAJBgNVBAYTAlVT\n"
+    "MRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5j\n"
+    "b20xIDAeBgNVBAMTF0RpZ2lDZXJ0IEdsb2JhbCBSb290IEcyMIIBIjANBgkqhkiG\n"
+    "9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuzfNNNx7a8myaJCtSnX/RrohCgiN9RlUyfuI\n"
+    "2/Ou8jqJkTx65qsGGmvPrC3oXgkkRLpimn7Wo6h+4FR1IAWsULecYxpsMNzaHxmx\n"
+    "1x7e/dfgy5SDN67sH0NO3Xss0r0upS/kqbitOtSZpLYl6ZtrAGCSYP9PIUkY92eQ\n"
+    "q2EGnI/yuum06ZIya7XzV+hdG82MHauVBJVJ8zUtluNJbd134/tJS7SsVQepj5Wz\n"
+    "tCO7TG1F8PapspUwtP1MVYwnSlcUfIKdzXOS0xZKBgyMUNGPHgm+F6HmIcr9g+UQ\n"
+    "vIOlCsRnKPZzFBQ9RnbDhxSJITRNrw9FDKZJobq7nMWxM4MphQIDAQABo0IwQDAP\n"
+    "BgNVHRMBAf8EBTADAQH/MA4GA1UdDwEB/wQEAwIBhjAdBgNVHQ4EFgQUTiJUIBiV\n"
+    "5uNu5g/6+rkS7QYXjzkwDQYJKoZIhvcNAQELBQADggEBAGBnKJRvDkhj6zHd6mcY\n"
+    "1Yl9PMWLSn/pvtsrF9+wX3N3KjITOYFnQoQj8kVnNeyIv/iPsGEMNKSuIEyExtv4\n"
+    "NeF22d+mQrvHRAiGfzZ0JFrabA0UWTW98kndth/Jsw1HKj2ZL7tcu7XUIOGZX1NG\n"
+    "Fdtom/DzMNU+MeKNhJ7jitralj41E6Vf8PlwUHBHQRFXGU7Aj64GxJUTFy8bJZ91\n"
+    "8rGOmaFvE7FBcf6IKshPECBV1/MUReXgRPTqh5Uykw7+U0b6LJ3/iyK5S9kJRaTe\n"
+    "pLiaWN0bfVKfjllDiIGknibVb63dDcY3fe0Dkhvld1927jyNxF1WW6LZZm6zNTfl\n"
+    "MrY=\n"
+    "-----END CERTIFICATE-----\n";
 
 // -------------------------------------------------------------------
 // MQTT Connect
@@ -81,13 +80,13 @@ boolean mqtt_connect()
   Serial.print("MQTT Server: ");
   mqtt_server = "EMONESPHUB1.azure-devices.net";
   Serial.println(mqtt_server);
-  
+
   Serial.print("MQTT Topic: ");
   Serial.println(mqtt_topic);
   if (espClient.connect(mqtt_server.c_str(), 8883, MQTT_TIMEOUT * 1000) != 1)
   {
-     DBUGS.println("MQTT connect timeout.");
-     return (0);
+    DBUGS.println("MQTT connect timeout.");
+    return (0);
   }
 
   espClient.setTimeout(MQTT_TIMEOUT);
@@ -99,21 +98,24 @@ boolean mqtt_connect()
   String strID = "ESP_EMON";
   // Device ID is device_wifi mac address
   // String wifiMac = WiFi.macAddress().replace(":", "_");
-  
+
 #else
   // String strID = String(ESP.getChipId());
   String strID = "ESP_EMON";
 #endif
 
-  if (mqtt_user.length() == 0) {
-    //allows for anonymous connection
+  if (mqtt_user.length() == 0)
+  {
+    // allows for anonymous connection
     mqttclient.connect(strID.c_str()); // Attempt to connect
-  } else {
+  }
+  else
+  {
     Serial.print("MQTT Device: ");
     Serial.println(mqtt_device_id);
     Serial.print("MQTT User: ");
     Serial.println(mqtt_user);
-    Serial.print("MQTT Pass: ");  
+    Serial.print("MQTT Pass: ");
     Serial.println(mqtt_pass);
     mqtt_server = "EMONESPHUB1.azure-devices.net";
     // mqttclient.setServer(mqtt_server.c_str(), 8883);
@@ -127,7 +129,9 @@ boolean mqtt_connect()
     {
       mqttclient.publish(mqtt_topic.c_str(), "connected"); // Once connected, publish an announcement..
     }
-  } else {
+  }
+  else
+  {
     DBUGS.print("MQTT failed: ");
     DBUGS.println(mqttclient.state());
     return (0);
@@ -142,64 +146,117 @@ boolean mqtt_connect()
 // base topic = emon/emonesp
 // MQTT Publish: emon/emonesp/CT1 > 3935 etc..
 // -------------------------------------------------------------------
-void mqtt_publish(const char * data)
-{
-  if (config_flags.mqtt_json)
-  {
-    // add some data onto the end
-    sprintf(input_json+strlen(input_json)-1,
-      ",\"freeram\":%lu,\"rssi\":%d}", (unsigned long)ESP.getFreeHeap(), WiFi.RSSI());
+// void mqtt_publish(const char * data)
+// {
+//   if (config_flags.mqtt_json)
+//   {
+//     // add some data onto the end
+//     sprintf(input_json+strlen(input_json)-1,
+//       ",\"freeram\":%lu,\"rssi\":%d}", (unsigned long)ESP.getFreeHeap(), WiFi.RSSI());
 
-    if (!mqttclient.publish(mqtt_topic.c_str(), input_json, false))
+//     if (!mqttclient.publish(mqtt_topic.c_str(), input_json, false))
+//     {
+//       return;
+//     }
+//   }
+//   else
+//   {
+//     const char * data_ptr = data;
+//     char * topic_ptr = mqtt_topic_prefix;
+//     topic_ptr += sprintf(mqtt_topic_prefix, "%s/%s", mqtt_topic.c_str(), mqtt_feed_prefix.c_str());
+
+//     do
+//     {
+//       int pos = strcspn(data_ptr, ":");
+//       strncpy(topic_ptr, data_ptr, pos);
+//       topic_ptr[pos] = 0;
+//       data_ptr += pos;
+//       if (*data_ptr++ == 0) {
+//         break;
+//       }
+
+//       pos = strcspn(data_ptr, ",");
+//       strncpy(mqtt_data, data_ptr, pos);
+//       mqtt_data[pos] = 0;
+//       data_ptr += pos;
+
+//       // send data via mqtt
+//       //delay(100);
+//       //DBUGS.printf("%s = %s\r\n", mqtt_topic_prefix, mqtt_data);
+//       if (!mqttclient.publish(mqtt_topic_prefix, mqtt_data))
+//       {
+//         return;
+//       }
+//     } while (*data_ptr++ != 0);
+
+//     Serial.printf("Publishing: %s = %s\n", mqtt_topic_prefix, mqtt_data);
+
+//     // send esp free ram
+//     sprintf(mqtt_topic_prefix, "%s/%sfreeram", mqtt_topic.c_str(), mqtt_feed_prefix.c_str());
+//     sprintf(mqtt_data, "%lu", (unsigned long)ESP.getFreeHeap());
+//     if (!mqttclient.publish(mqtt_topic_prefix, mqtt_data))
+//     {
+//       return;
+//     }
+
+//     // send wifi signal strength
+//     sprintf(mqtt_topic_prefix, "%s/%srssi", mqtt_topic.c_str(), mqtt_feed_prefix.c_str());
+//     sprintf(mqtt_data, "%d", WiFi.RSSI());
+//     if (!mqttclient.publish(mqtt_topic_prefix, mqtt_data))
+//     {
+//       return;
+//     }
+//   }
+// }
+
+#include <Arduino.h>
+#include <WiFi.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string>
+
+void mqtt_publish(const char *data)
+{
+  // Use std::string to dynamically handle buffer size
+  std::string json_buffer = "{";
+
+  const char *data_ptr = data;
+
+  while (*data_ptr)
+  {
+    int key_length = strcspn(data_ptr, ":"); // Find the key length
+    json_buffer += "\"";
+    json_buffer.append(data_ptr, key_length);
+    json_buffer += "\":\"";
+
+    data_ptr += key_length + 1; // Move past the colon
+
+    int value_length = strcspn(data_ptr, ","); // Find value length
+    json_buffer.append(data_ptr, value_length);
+    json_buffer += "\"";
+
+    data_ptr += value_length; // Move past the value
+    if (*data_ptr == ',')
     {
-      return;
+      json_buffer += ",";
+      data_ptr++; // Skip the comma
     }
   }
-  else
+
+  // Add ESP32-specific data
+  char extra_data[128];
+  snprintf(extra_data, sizeof(extra_data),
+           ",\"freeram\":%lu,\"rssi\":%d}",
+           (unsigned long)ESP.getFreeHeap(), WiFi.RSSI());
+
+  json_buffer += extra_data;
+
+  // Publish to MQTT
+  Serial.println("Publishing data to MQTT TOPIC: " + mqtt_topic);
+  Serial.println("BODY: " + String(json_buffer.c_str()));
+  if (!mqttclient.publish(mqtt_topic.c_str(), json_buffer.c_str(), false))
   {
-    const char * data_ptr = data;
-    char * topic_ptr = mqtt_topic_prefix;
-    topic_ptr += sprintf(mqtt_topic_prefix, "%s/%s", mqtt_topic.c_str(), mqtt_feed_prefix.c_str());
-
-    do
-    {
-      int pos = strcspn(data_ptr, ":");
-      strncpy(topic_ptr, data_ptr, pos);
-      topic_ptr[pos] = 0;
-      data_ptr += pos;
-      if (*data_ptr++ == 0) {
-        break;
-      }
-
-      pos = strcspn(data_ptr, ",");
-      strncpy(mqtt_data, data_ptr, pos);
-      mqtt_data[pos] = 0;
-      data_ptr += pos;
-
-      // send data via mqtt
-      //delay(100);
-      //DBUGS.printf("%s = %s\r\n", mqtt_topic_prefix, mqtt_data);
-      if (!mqttclient.publish(mqtt_topic_prefix, mqtt_data))
-      {
-        return;
-      }
-    } while (*data_ptr++ != 0);
-
-    // send esp free ram
-    sprintf(mqtt_topic_prefix, "%s/%sfreeram", mqtt_topic.c_str(), mqtt_feed_prefix.c_str());
-    sprintf(mqtt_data, "%lu", (unsigned long)ESP.getFreeHeap());
-    if (!mqttclient.publish(mqtt_topic_prefix, mqtt_data))
-    {
-      return;
-    }
-
-    // send wifi signal strength
-    sprintf(mqtt_topic_prefix, "%s/%srssi", mqtt_topic.c_str(), mqtt_feed_prefix.c_str());
-    sprintf(mqtt_data, "%d", WiFi.RSSI());
-    if (!mqttclient.publish(mqtt_topic_prefix, mqtt_data))
-    {
-      return;
-    }
+    Serial.println("MQTT Publish failed!");
   }
 }
 
@@ -210,14 +267,17 @@ void mqtt_publish(const char * data)
 // -------------------------------------------------------------------
 void mqtt_loop()
 {
-  if (!mqttclient.connected()) {
+  if (!mqttclient.connected())
+  {
 
     long now = millis();
     // try and reconnect continuously for first 5s then try again once every 10s
-    if ( (now < 5000) || ((now - lastMqttReconnectAttempt)  > 10000) ) {
+    if ((now < 5000) || ((now - lastMqttReconnectAttempt) > 10000))
+    {
       lastMqttReconnectAttempt = now;
       Serial.println("MQTT reconnecting...");
-      if (mqtt_connect()) { // Attempt to reconnect
+      if (mqtt_connect())
+      { // Attempt to reconnect
         lastMqttReconnectAttempt = 0;
         mqtt_connection_error_count = 0;
         Serial.println("MQTT reconnected");
@@ -226,10 +286,13 @@ void mqtt_loop()
         bool p_status = mqttclient.publish(mqtt_topic.c_str(), "reconnected"); // Once reconnected, publish an announcement..
         Serial.print("MQTT Publish Status: ");
         Serial.println(p_status);
-      } else {
+      }
+      else
+      {
         Serial.println("MQTT not reconnected");
-        mqtt_connection_error_count ++;
-        if (mqtt_connection_error_count > 10) {
+        mqtt_connection_error_count++;
+        if (mqtt_connection_error_count > 10)
+        {
 #ifdef ESP32
           esp_restart();
 #else
@@ -238,7 +301,9 @@ void mqtt_loop()
         }
       }
     }
-  } else {
+  }
+  else
+  {
     // if MQTT connected
     mqttclient.loop();
   }
@@ -246,7 +311,8 @@ void mqtt_loop()
 
 void mqtt_restart()
 {
-  if (mqttclient.connected()) {
+  if (mqttclient.connected())
+  {
     mqttclient.disconnect();
   }
 }

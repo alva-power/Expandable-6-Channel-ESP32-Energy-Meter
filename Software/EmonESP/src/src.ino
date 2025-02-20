@@ -150,7 +150,7 @@ void loop()
       mqtt_loop();
       if (gotInput)
       {
-        Serial.println("Publishing data to mqtt");
+        // Serial.println("Publishing data to mqtt " + String(input));
         mqtt_publish(input);
       }
     }

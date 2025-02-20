@@ -133,10 +133,10 @@ void energy_meter_loop()
   unsigned short en0_2 = sensor_ic2[0].GetMeterStatus0();
   unsigned short en1_2 = sensor_ic2[0].GetMeterStatus1();
 
-  Serial.println("Sys Status 1: S0:0x" + String(sys0, HEX) + " S1:0x" + String(sys1, HEX));
-  Serial.println("Meter Status 1: E0:0x" + String(en0, HEX) + " E1:0x" + String(en1, HEX));
-  Serial.println("Sys Status 2: S0:0x" + String(sys0_2, HEX) + " S1:0x" + String(sys1_2, HEX));
-  Serial.println("Meter Status 2: E0:0x" + String(en0_2, HEX) + " E1:0x" + String(en1_2, HEX));
+  // Serial.println("Sys Status 1: S0:0x" + String(sys0, HEX) + " S1:0x" + String(sys1, HEX));
+  // Serial.println("Meter Status 1: E0:0x" + String(en0, HEX) + " E1:0x" + String(en1, HEX));
+  // Serial.println("Sys Status 2: S0:0x" + String(sys0_2, HEX) + " S1:0x" + String(sys1_2, HEX));
+  // Serial.println("Meter Status 2: E0:0x" + String(en0_2, HEX) + " E1:0x" + String(en1_2, HEX));
   delay(10);
 
   /* only 1 voltage channel is used on each IC */
@@ -146,9 +146,9 @@ void energy_meter_loop()
   freq = sensor_ic1[0].GetFrequency();
   temp = sensor_ic1[0].GetTemperature();
 
-  Serial.println("Temp:" + String(temp) + "C");
-  Serial.println("Freq:" + String(freq) + "Hz");
-  Serial.println("V1:" + String(voltage1) + "V   V2:" + String(voltage2) + "V");
+  // Serial.println("Temp:" + String(temp) + "C");
+  // Serial.println("Freq:" + String(freq) + "Hz");
+  // Serial.println("V1:" + String(voltage1) + "V   V2:" + String(voltage2) + "V");
 
   strcpy(result, "temp:");
   dtostrf(temp, 2, 1, measurement);
