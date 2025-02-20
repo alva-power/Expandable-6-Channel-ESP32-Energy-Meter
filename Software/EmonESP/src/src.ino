@@ -32,7 +32,7 @@
 // If USE_SERIAL_INPUT is defined, EmonESP will check the serial port for
 // input. Only enable this if there is input expected on the serial port;
 // otherwise it seems to read garbage data.
-//#define USE_SERIAL_INPUT
+// #define USE_SERIAL_INPUT
 
 #include <esp_task_wdt.h>
 #include "emonesp.h"
@@ -54,7 +54,8 @@ static char input[MAX_DATA_LEN];
 // -------------------------------------------------------------------
 // SETUP
 // -------------------------------------------------------------------
-void setup() {
+void setup()
+{
 #ifdef ENABLE_WDT
   enableLoopWDT();
 #endif
@@ -67,6 +68,15 @@ void setup() {
 
   // Read saved settings from the config
   config_load_settings();
+  // Set MQTT topic
+  String macAddressMqtt = WiFi.macAddress();
+
+  // Replace colons with underscores
+  macAddressMqtt.replace(":", "_");
+
+  // Construct the MQTT topic
+  mqtt_topic = "devices/device_" + macAddressMqtt + "/messages/events/";
+
   delay(200);
 
   setup_bluetooth();
@@ -120,20 +130,26 @@ void loop()
 #endif
 
   boolean gotInput = input_get(input);
-  if (gotInput) {
+  if (gotInput)
+  {
     DBUGS.println(".");
   }
 
-  if (wifi_client_connected()) {
-    if (emoncms_apikey != 0 && gotInput) {
-      //DBUGS.println(input);
-      if (emoncms_server != 0) {
+  if (wifi_client_connected())
+  {
+    if (emoncms_apikey != 0 && gotInput)
+    {
+      // DBUGS.println(input);
+      if (emoncms_server != 0)
+      {
         emoncms_publish(input);
       }
     }
-    if (mqtt_server != 0) {
+    if (mqtt_server != 0)
+    {
       mqtt_loop();
-      if (gotInput) {
+      if (gotInput)
+      {
         Serial.println("Publishing data to mqtt");
         mqtt_publish(input);
       }

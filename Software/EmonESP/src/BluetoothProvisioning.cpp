@@ -53,6 +53,7 @@ class CharacteristicCallbacks : public NimBLECharacteristicCallbacks
             {
                 // Send WiFi MAC address to the client
                 String macAddress = "MAC: " + WiFi.macAddress();
+                
                 Serial.println(macAddress);
                 pCharacteristic->setValue(macAddress.c_str());
                 pCharacteristic->notify();
@@ -120,13 +121,13 @@ class CharacteristicCallbacks : public NimBLECharacteristicCallbacks
     
                     if (WiFi.status() == WL_CONNECTED)
                     {
-                        String successMsg = "Connected! IP: " + WiFi.localIP().toString();
+                        String successMsg = "WIFI_Connected! IP: " + WiFi.localIP().toString();
                         Serial.println(successMsg);
                         pCharacteristic->setValue(successMsg.c_str());
                     }
                     else
                     {
-                        String failMsg = "Failed to connect to WiFi";
+                        String failMsg = "WIFI_ERROR Failed to connect to WiFi";
                         Serial.println(failMsg);
                         pCharacteristic->setValue(failMsg.c_str());
                     }
@@ -142,7 +143,11 @@ class CharacteristicCallbacks : public NimBLECharacteristicCallbacks
                 mqtt_device_id = "device_" +  modifiedMac;
                 mqtt_user = credentials.substring(0, commaIndex);
                 mqtt_pass = credentials.substring(commaIndex + 1);
-                
+
+                // Inform the device that we received the credentials
+                String msg = "CREDS_Success";
+                pCharacteristic->setValue(msg.c_str());
+                pCharacteristic->notify();
                 Serial.println("Updated mqtt user and password");
             }
 
