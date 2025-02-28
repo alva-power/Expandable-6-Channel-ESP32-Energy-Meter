@@ -4,6 +4,7 @@
 #include <NimBLEUtils.h>
 
 #include "config.h"
+#include "led_controller.h"
 
 #define DEVICE_NAME "ESP32_BLE_Setup"
 #define SERVICE_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
@@ -121,6 +122,7 @@ class CharacteristicCallbacks : public NimBLECharacteristicCallbacks
     
                     if (WiFi.status() == WL_CONNECTED)
                     {
+                        config_save_wifi(ssid, password); // Save wifi credentials to EEPROM
                         String successMsg = "WIFI_Connected! IP: " + WiFi.localIP().toString();
                         Serial.println(successMsg);
                         pCharacteristic->setValue(successMsg.c_str());
@@ -149,6 +151,7 @@ class CharacteristicCallbacks : public NimBLECharacteristicCallbacks
                 pCharacteristic->setValue(msg.c_str());
                 pCharacteristic->notify();
                 Serial.println("Updated mqtt user and password");
+                config_save_mqtt(mqtt_server, mqtt_topic, mqtt_feed_prefix, mqtt_user, mqtt_pass, true);
             }
 
         }
@@ -207,12 +210,19 @@ void setup_bluetooth()
     // Start advertising
     bool advertisingStarted = pAdvertising->start();
     Serial.print("Advertising started: ");
+    // digitalWrite(2, HIGH);
     Serial.println(advertisingStarted ? "Yes" : "No");
     Serial.println("BLE server ready!");
 }
 
 void loop_bluetooth()
 {
+    if (isBluetoothAdvertising && get_led_state() != LED_BLINKING) {
+        set_led_state(LED_BLINKING);
+    } else if (!isBluetoothAdvertising) {
+        Serial.println("Truning off blinking!");
+        set_led_state(LED_OFF);
+    }
     // Handle connection state changes
     if (!deviceConnected && !isBluetoothAdvertising)
     {

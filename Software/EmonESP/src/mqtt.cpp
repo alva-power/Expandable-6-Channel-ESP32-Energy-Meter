@@ -229,7 +229,7 @@ void mqtt_publish(const char *data)
     json_buffer.append(data_ptr, key_length);
     json_buffer += "\":\"";
 
-    data_ptr += key_length + 1; // Move past the colon
+  data_ptr += key_length + 1; // Move past the colon
 
     int value_length = strcspn(data_ptr, ","); // Find value length
     json_buffer.append(data_ptr, value_length);

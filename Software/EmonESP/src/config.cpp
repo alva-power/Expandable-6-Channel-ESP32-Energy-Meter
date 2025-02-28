@@ -31,8 +31,8 @@
 #include "config.h"
 
 // Wifi Network Strings
-String esid = "Aiprofessionls";
-String epass = "IH@j@b5!";
+String esid = "";
+String epass = "";
 
 // Web server authentication (leave blank for none)
 String www_username = "";
@@ -48,9 +48,10 @@ String emoncms_fingerprint = "";
 // MQTT Settings
 String mqtt_device_id = "";
 String mqtt_server = "EMONESPHUB1.azure-devices.net";
-String mqtt_topic = "devices/device_A0_B7_65_4C_54_C0/messages/events/";
-String mqtt_user = "EMONESPHUB1.azure-devices.net/ESP_EMON/?api-version=2021-04-12";
-String mqtt_pass = "SharedAccessSignature sr=EMONESPHUB1.azure-devices.net%2Fdevices%2FESP_EMON&sig=9lgmpZ6J8Sx%2BtkNdzDv85FeSb6slZA9ow9IyTxYKWGw%3D&se=100001736190509";
+String mqtt_topic = "";
+// String mqtt_topic = "devices/device_A0_B7_65_4C_54_C0/messages/events/";
+String mqtt_user = "";
+String mqtt_pass = "";
 String mqtt_feed_prefix = "";
 
 
@@ -323,11 +324,11 @@ void config_load_settings()
                      EEPROM_EMON_FINGERPRINT_SIZE, emoncms_fingerprint);
 
   // MQTT settings
-  // EEPROM_read_string(EEPROM_MQTT_SERVER_START, EEPROM_MQTT_SERVER_SIZE, mqtt_server);
-  // EEPROM_read_string(EEPROM_MQTT_TOPIC_START, EEPROM_MQTT_TOPIC_SIZE, mqtt_topic);
-  // EEPROM_read_string(EEPROM_MQTT_FEED_PREFIX_START, EEPROM_MQTT_FEED_PREFIX_SIZE, mqtt_feed_prefix);
-  // EEPROM_read_string(EEPROM_MQTT_USER_START, EEPROM_MQTT_USER_SIZE, mqtt_user);
-  // EEPROM_read_string(EEPROM_MQTT_PASS_START, EEPROM_MQTT_PASS_SIZE, mqtt_pass);
+  EEPROM_read_string(EEPROM_MQTT_SERVER_START, EEPROM_MQTT_SERVER_SIZE, mqtt_server);
+  EEPROM_read_string(EEPROM_MQTT_TOPIC_START, EEPROM_MQTT_TOPIC_SIZE, mqtt_topic);
+  EEPROM_read_string(EEPROM_MQTT_FEED_PREFIX_START, EEPROM_MQTT_FEED_PREFIX_SIZE, mqtt_feed_prefix);
+  EEPROM_read_string(EEPROM_MQTT_USER_START, EEPROM_MQTT_USER_SIZE, mqtt_user);
+  EEPROM_read_string(EEPROM_MQTT_PASS_START, EEPROM_MQTT_PASS_SIZE, mqtt_pass);
 
   // Calibration settings
   voltage_cal = EEPROM_read_ushort(EEPROM_CAL_VOLTAGE_START, VOLTAGE_GAIN_DEFAULT);
