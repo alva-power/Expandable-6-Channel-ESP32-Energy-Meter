@@ -29,20 +29,20 @@
 #define NUM_BOARDS 7
 #define NUM_INPUTS 6
 
-#define NUM_CHANNELS (NUM_BOARDS*NUM_INPUTS)
+#define NUM_CHANNELS (NUM_BOARDS * NUM_INPUTS)
 
-//#define ENABLE_OLED_DISPLAY
+// #define ENABLE_OLED_DISPLAY
 
 /*
    The following calibration values can be set here or in the EmonESP interface
    EmonESP values take priority if they are set
 */
 /*
-   4231 for 60 hz 6 channel meter 
+   4231 for 60 hz 6 channel meter
    135 for 50 hz 6 channel meter
 */
 
-#define LINE_FREQ_DEFAULT 4231
+#define LINE_FREQ_DEFAULT 0x87
 
 /*
    Sets the current gain to 1x, 2x, or 4x. If your CT has a low current output use 2x or 4x.
@@ -50,7 +50,7 @@
    21 (2x)
    42 (4x)
 */
-#define PGA_GAIN_DEFAULT 0
+#define PGA_GAIN_DEFAULT 42
 
 /*
    For meter <= v1.2:
@@ -58,8 +58,10 @@
       32428 - 12v AC Transformer - Jameco 167151
    For meter > v1.3:
       7305 - 9v AC Transformer - Jameco 157041
+
+      11152 - Tufvassons stunt | should: 11.5V, actual: 13.7V
 */
-#define VOLTAGE_GAIN_DEFAULT 7305
+#define VOLTAGE_GAIN_DEFAULT 11152
 
 /*
  When PGA Gain is set to 0
@@ -70,7 +72,7 @@
   100A/50mA SCT-013-000: 27961
   120A/40mA: SCT-016: 41880
 */
-#define CURRENT_GAIN_DEFAULT 27961
+#define CURRENT_GAIN_DEFAULT 27961 * 1.5 / 4
 
 extern void energy_meter_setup();
 extern void energy_meter_loop();

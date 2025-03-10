@@ -57,15 +57,7 @@ const int MAX_RETRIES = 10;
 void setup()
 {
 
-#ifdef ENABLE_WDT
-  enableLoopWDT();
-#endif
-
   Serial.begin(115200);
-#ifdef DEBUG_SERIAL1
-  Serial1.begin(115200);
-#endif
-  delay(200);
 
   led_setup(LED_PIN);
   delay(200);
@@ -73,127 +65,9 @@ void setup()
   // Read saved settings from the config
   config_load_settings();
 
-  // Set MQTT topic
-  String macAddressMqtt = WiFi.macAddress();
-
-  // Replace colons with underscores
-  macAddressMqtt.replace(":", "_");
-
-  String modifiedMac = WiFi.macAddress();
-  modifiedMac.replace(":", "_");
-  mqtt_device_id = "device_" +  modifiedMac;
-
-  // Construct the MQTT topic
-  mqtt_topic = "devices/device_" + macAddressMqtt + "/messages/events/";
-
-  Serial.print("MQTT TOPIC IS BEING SET IN THE SETUP NOW: ");
-  Serial.println(mqtt_topic);
-
-  // Check if we have valid wifi username and password.
-  if (esid.length() == 0 || epass.length() == 0)
-  // if (true)
-  {
-    DBUGS.println("No WiFi credentials saved. Starting provisioning.");
-
-    // Start provisioning
-    setup_bluetooth();
-  }
-  else
-  {
-    DBUGS.println("WiFi credentials saved. Starting normal operation." + esid + " " + epass);
-    Serial.print("SSID: ");
-    Serial.println(esid);
-    Serial.print("Password: ");
-    Serial.println(epass);
-
-    WiFi.disconnect(true);
-    delay(1000);
-    // Try connecting wifi
-    WiFi.mode(WIFI_STA);
-    delay(1000);
-
-    WiFi.begin(esid.c_str(), epass.c_str());
-
-    int attempts = 0;
-    while (WiFi.status() != WL_CONNECTED && attempts < MAX_RETRIES)
-    {
-      delay(2000);
-      Serial.print(".");
-      // Print the actual WiFi status
-      Serial.print("WiFi status: ");
-      Serial.println(WiFi.status());
-
-      String statusMsg = "Attempt " + String(attempts + 1) + " of " + String(MAX_RETRIES);
-      switch (WiFi.status())
-      {
-      case WL_IDLE_STATUS:
-        statusMsg += " (IDLE)";
-        break;
-      case WL_NO_SSID_AVAIL:
-        statusMsg += " (NO SSID)";
-        break;
-      case WL_SCAN_COMPLETED:
-        statusMsg += " (SCAN DONE)";
-        break;
-      case WL_CONNECT_FAILED:
-        statusMsg += " (FAILED)";
-        break;
-      case WL_CONNECTION_LOST:
-        statusMsg += " (LOST)";
-        break;
-      case WL_DISCONNECTED:
-        statusMsg += " (DISCONNECTED)";
-        break;
-      }
-      attempts++;
-    }
-
-    if (WiFi.status() == WL_CONNECTED)
-    {
-      config_save_wifi(esid, epass); // Save wifi credentials to EEPROM
-      String successMsg = "WIFI_Connected! IP: " + WiFi.localIP().toString();
-      
-    } else {
-      String failMsg = "WIFI_ERROR Failed to connect to WiFi";
-      Serial.println(failMsg);
-      setup_bluetooth();
-    }
-  }
-  // If not start bluetooth.
-  // If yes, start wifi
-  // if wifi connection failed, change to bluetooth
-
-
-        
-
-  delay(200);
-
-  // Initialise the WiFi
-  // wifi_setup();
-  delay(200);
-
-  delay(200);
-
-  // Bring up the web server
-  // web_server_setup();
-  delay(200);
-
-#ifdef ENABLE_WDT
-  DBUGS.println("Watchdog timer is enabled.");
-  feedLoopWDT();
-#endif
-
-#ifdef ENABLE_WEB_OTA
-  // Start the OTA update systems
-  ota_setup();
-#endif
-
-#ifdef ENABLE_ENERGY_METER
   energy_meter_setup();
-#endif
-  digitalWrite(2, LOW);
 
-  DBUGLN("Server started");
+  digitalWrite(2, LOW);
 
 } // end setup
 
@@ -210,55 +84,7 @@ void loop()
   {
     led_blink_off();
   }
-  // digitalWrite(2, LOW);
-#ifdef ENABLE_WDT
-  // feedLoopWDT();
-#endif
-  // web_server_loop();
-  // wifi_loop();
-  loop_bluetooth();
 
-#ifdef ENABLE_WEB_OTA
-  // ota_loop();
-#endif
-
-#ifdef ENABLE_ENERGY_METER
   energy_meter_loop();
-#endif
-
-  boolean gotInput = input_get(input);
-  if (gotInput)
-  {
-    DBUGS.println(".");
-  }
-
-  if (wifi_client_connected())
-  {
-    if (emoncms_apikey != 0 && gotInput)
-    {
-      // DBUGS.println(input);
-      if (emoncms_server != 0)
-      {
-        emoncms_publish(input);
-      }
-    }
-    if (mqtt_server != 0)
-    {
-      mqtt_loop();
-      if (gotInput)
-      {
-        // print mqtt_server and mqtt_topic, mqtt_feed_prefix, mqtt_user, mqtt_pass
-        Serial.print("MQTT Server: ");
-        Serial.println(mqtt_server);
-        Serial.print("MQTT Topic: ");
-        Serial.println(mqtt_topic);
-        Serial.print("MQTT user: ");
-        Serial.println(mqtt_user);
-        Serial.print("MQTT password: ");
-        Serial.println(mqtt_pass);
-        mqtt_publish(input);
-      }
-    }
-  }
 
 } // end loop
