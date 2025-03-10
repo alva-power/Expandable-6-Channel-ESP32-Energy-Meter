@@ -84,7 +84,6 @@ void loop()
   {
     led_blink_off();
   }
-
   energy_meter_loop();
 
 } // end loop

@@ -72,7 +72,7 @@
   100A/50mA SCT-013-000: 27961
   120A/40mA: SCT-016: 41880
 */
-#define CURRENT_GAIN_DEFAULT 27961 * 1.5 / 4
+#define CURRENT_GAIN_DEFAULT 27961 * 1.5 / 4 // 3000:1 vs 2000:1 scaling 1.5x, then /4 for PGA
 
 extern void energy_meter_setup();
 extern void energy_meter_loop();

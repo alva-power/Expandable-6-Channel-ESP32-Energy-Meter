@@ -271,7 +271,6 @@ void energy_meter_loop()
     // Serial.println("");
   }
   strcpy(result_json, "]}");
-  Serial.println(input_string);
 
 #ifdef ENABLE_OLED_DISPLAY
   /* Write meter data to the display */
@@ -295,4 +294,5 @@ void energy_meter_loop()
   */
   display.display();
 #endif
+  Serial.println(input_json);
 }
