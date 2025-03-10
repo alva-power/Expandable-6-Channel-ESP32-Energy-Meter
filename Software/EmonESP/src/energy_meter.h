@@ -61,7 +61,7 @@
 
       11152 - Tufvassons stunt | should: 11.5V, actual: 13.7V
 */
-#define VOLTAGE_GAIN_DEFAULT 11152
+#define VOLTAGE_GAIN_DEFAULT 11461
 
 /*
  When PGA Gain is set to 0
