@@ -236,12 +236,14 @@ double ATM90E32::GetLineVoltageA()
 double ATM90E32::GetLineVoltageB()
 {
   unsigned short voltage = CommEnergyIC(READ, UrmsB, 0xFFFF);
-  return (double)voltage / 100;
+  unsigned short voltageLSB = CommEnergyIC(READ, UrmsBLSB, 0xFFFF);
+  return (double)voltage / 100 + (double)voltageLSB / 100 / 256;
 }
 double ATM90E32::GetLineVoltageC()
 {
   unsigned short voltage = CommEnergyIC(READ, UrmsC, 0xFFFF);
-  return (double)voltage / 100;
+  unsigned short voltageLSB = CommEnergyIC(READ, UrmsCLSB, 0xFFFF);
+  return (double)voltage / 100 + (double)voltageLSB / 100 / 256;
 }
 
 // CURRENT
@@ -414,7 +416,23 @@ double ATM90E32::GetValueRegister(unsigned short registerRead)
 double ATM90E32::GetImportEnergy()
 {
   unsigned short ienergyT = CommEnergyIC(READ, APenergyT, 0xFFFF);
-  return (double)ienergyT / 100 / 3200; // returns kWh
+  return (double)ienergyT * 10 / 3200; // returns Wh
+}
+
+double ATM90E32::GetImportEnergyA()
+{
+  unsigned short ienergyT = CommEnergyIC(READ, APenergyA, 0xFFFF);
+  return (double)ienergyT * 10 / 3200; // returns Wh
+}
+double ATM90E32::GetImportEnergyB()
+{
+  unsigned short ienergyT = CommEnergyIC(READ, APenergyB, 0xFFFF);
+  return (double)ienergyT * 10 / 3200; // returns Wh
+}
+double ATM90E32::GetImportEnergyC()
+{
+  unsigned short ienergyT = CommEnergyIC(READ, APenergyC, 0xFFFF);
+  return (double)ienergyT * 10 / 3200; // returns Wh
 }
 // unsigned short ienergyA = CommEnergyIC(READ, APenergyA, 0xFFFF);
 // unsigned short ienergyB = CommEnergyIC(READ, APenergyB, 0xFFFF);
@@ -444,7 +462,23 @@ double ATM90E32::GetImportApparentEnergy()
 double ATM90E32::GetExportEnergy()
 {
   unsigned short eenergyT = CommEnergyIC(READ, ANenergyT, 0xFFFF);
-  return (double)eenergyT / 100 / 3200; // returns kWh
+  return (double)eenergyT * 10 / 3200; // returns Wh
+}
+
+double ATM90E32::GetExportEnergyA()
+{
+  unsigned short ienergyT = CommEnergyIC(READ, ANenergyA, 0xFFFF);
+  return (double)ienergyT * 10 / 3200; // returns Wh
+}
+double ATM90E32::GetExportEnergyB()
+{
+  unsigned short ienergyT = CommEnergyIC(READ, ANenergyB, 0xFFFF);
+  return (double)ienergyT * 10 / 3200; // returns Wh
+}
+double ATM90E32::GetExportEnergyC()
+{
+  unsigned short ienergyT = CommEnergyIC(READ, ANenergyC, 0xFFFF);
+  return (double)ienergyT * 10 / 3200; // returns Wh
 }
 // unsigned short eenergyA = CommEnergyIC(READ, ANenergyA, 0xFFFF);
 // unsigned short eenergyB = CommEnergyIC(READ, ANenergyB, 0xFFFF);
@@ -513,6 +547,12 @@ void ATM90E32::begin(int pin, unsigned short lineFreq, unsigned short pgagain, u
   unsigned short FreqHiThresh;
   unsigned short FreqLoThresh;
   if (_lineFreq == 4485 || _lineFreq == 5231)
+  /*
+  Val:   12  11  10  09  08  07  06  05  04  03  02  01  00
+  4485    1  0    0   0   1   1   0   0   0   0   1   1   0   -> 60 Hz, CT, 3P3W, dont include phase C in power measurement
+  5231    1  0    1   0   0   0   1   1 -> 60 Hz, rogowski, 3p4w, output apparent energy on pulse, calc with abs energy (not arith)
+  0x87    0  0    0   0   0   1
+  */
   {
     sagV = 90;
     FreqHiThresh = 61 * 100;
@@ -528,10 +568,9 @@ void ATM90E32::begin(int pin, unsigned short lineFreq, unsigned short pgagain, u
   vSagTh = (sagV * 100 * sqrt(2)) / (2 * _ugain / 32768);
 
   // Initialize registers
-  CommEnergyIC(WRITE, SoftReset, 0x789A);   // 70 Perform soft reset
-  CommEnergyIC(WRITE, CfgRegAccEn, 0x55AA); // 7F enable register config access
-  CommEnergyIC(WRITE, MeterEn, 0x0001);     // 00 Enable Metering
-
+  CommEnergyIC(WRITE, SoftReset, 0x789A);      // 70 Perform soft reset
+  CommEnergyIC(WRITE, CfgRegAccEn, 0x55AA);    // 7F enable register config access
+  CommEnergyIC(WRITE, MeterEn, 0x0001);        // 00 Enable Metering
   CommEnergyIC(WRITE, SagPeakDetCfg, 0x143F);  // 05 Sag and Voltage peak detect period set to 20ms
   CommEnergyIC(WRITE, SagTh, vSagTh);          // 08 Voltage sag threshold
   CommEnergyIC(WRITE, FreqHiTh, FreqHiThresh); // 0D High frequency threshold
