@@ -266,9 +266,9 @@ void energy_meter_loop()
       result_json += sprintf(result_json, ",\"a\":%.4f", currentCT[j]);
       result_json += sprintf(result_json, ",\"pf\":%.3f", powerFactorCT[j]);
       result_json += sprintf(result_json, ",\"va\":%.2f", vaPowerCT[j]);
-      result_json += sprintf(result_json, ",\"v\":%.2f}", voltageCT[j]);
+      result_json += sprintf(result_json, ",\"v\":%.2f", voltageCT[j]);
 
-      result_json += sprintf(result_json, ",\"ew\":%.2f}", exportEnergyCT[j]);
+      result_json += sprintf(result_json, ",\"ew\":%.2f", exportEnergyCT[j]);
       result_json += sprintf(result_json, ",\"iw\":%.2f}", importEnergyCT[j]);
 
       sprintf(result + strlen(result), ",CT%d:", i * NUM_INPUTS + j + 1);
