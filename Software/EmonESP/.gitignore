@@ -1,4 +1,7 @@
 .pio
-.vscode
+
+!.vscode
+.vscode/*
+!.vscode/settings.json
 .clang_complete
 .gcc-flags.json

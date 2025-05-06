@@ -74,8 +74,9 @@ void energy_meter_setup() {
   Serial.println("Start ATM90E32");
   for (i = 0; i < NUM_BOARDS; i ++)
   {
-    sensor_ic1[i].begin(CS1[i], freq_cal, gain_cal[i] & 0xFF, voltage_cal, ct_cal[i*NUM_INPUTS+0], ct_cal[i*NUM_INPUTS+1], ct_cal[i*NUM_INPUTS+2]);
-    sensor_ic2[i].begin(CS2[i], freq_cal, gain_cal[i] >> 8, voltage2_cal, ct_cal[i*NUM_INPUTS+3], ct_cal[i*NUM_INPUTS+4], ct_cal[i*NUM_INPUTS+5]);
+    sensor_ic1[i].begin(CS1[i], freq_cal, gain_cal[i] & 0xFF, voltage_cal, ct_cal[i * NUM_INPUTS + 0], ct_cal[i * NUM_INPUTS + 1], ct_cal[i * NUM_INPUTS + 2]);
+    sensor_ic2[i].begin(CS2[i], freq_cal, gain_cal[i] & 0xFF, voltage_cal, ct_cal[i * NUM_INPUTS + 0], ct_cal[i * NUM_INPUTS + 1], ct_cal[i * NUM_INPUTS + 2]);
+    // sensor_ic2[i].begin(CS2[i], freq_cal, gain_cal[i] >> 8, voltage2_cal, ct_cal[i * NUM_INPUTS + 3], ct_cal[i * NUM_INPUTS + 4], ct_cal[i * NUM_INPUTS + 5]);
     delay(200);
   }
 
@@ -121,7 +122,8 @@ void energy_meter_loop()
 
   /*Repeatedly fetch some values from the ATM90E32 */
   float temp, freq, voltage1, voltage2, voltageCT[NUM_INPUTS], currentCT[NUM_INPUTS],
-        realPowerCT[NUM_INPUTS], vaPowerCT[NUM_INPUTS], powerFactorCT[NUM_INPUTS];
+      realPowerCT[NUM_INPUTS], vaPowerCT[NUM_INPUTS], powerFactorCT[NUM_INPUTS],
+      importEnergyCT[NUM_INPUTS], exportEnergyCT[NUM_INPUTS];
 
   unsigned short sys0 = sensor_ic1[0].GetSysStatus0();  //EMMState0
   unsigned short sys1 = sensor_ic1[0].GetSysStatus1();  //EMMState1
@@ -146,9 +148,9 @@ void energy_meter_loop()
   freq = sensor_ic1[0].GetFrequency();
   temp = sensor_ic1[0].GetTemperature();
 
-  // Serial.println("Temp:" + String(temp) + "C");
-  // Serial.println("Freq:" + String(freq) + "Hz");
-  // Serial.println("V1:" + String(voltage1) + "V   V2:" + String(voltage2) + "V");
+  Serial.println("Temp:" + String(temp) + "C");
+  Serial.println("Freq:" + String(freq) + "Hz");
+  Serial.println("V1:" + String(voltage1) + "V   V2:" + String(voltage2) + "V");
 
   strcpy(result, "temp:");
   dtostrf(temp, 2, 1, measurement);
@@ -216,7 +218,21 @@ void energy_meter_loop()
     powerFactorCT[4] = sensor_ic2[i].GetPowerFactorB();
     powerFactorCT[5] = sensor_ic2[i].GetPowerFactorC();
 
-    for (j = 0; j < NUM_INPUTS; j ++)
+    importEnergyCT[0] = sensor_ic1[i].GetImportEnergyA();
+    importEnergyCT[1] = sensor_ic1[i].GetImportEnergyB();
+    importEnergyCT[2] = sensor_ic1[i].GetImportEnergyC();
+    importEnergyCT[3] = sensor_ic2[i].GetImportEnergyA();
+    importEnergyCT[4] = sensor_ic2[i].GetImportEnergyB();
+    importEnergyCT[5] = sensor_ic2[i].GetImportEnergyC();
+
+    exportEnergyCT[0] = sensor_ic1[i].GetExportEnergyA();
+    exportEnergyCT[1] = sensor_ic1[i].GetExportEnergyB();
+    exportEnergyCT[2] = sensor_ic1[i].GetExportEnergyC();
+    exportEnergyCT[3] = sensor_ic2[i].GetExportEnergyA();
+    exportEnergyCT[4] = sensor_ic2[i].GetExportEnergyB();
+    exportEnergyCT[5] = sensor_ic2[i].GetExportEnergyC();
+
+    for (j = 0; j < NUM_INPUTS; j++)
     {
       /* determine if negative - current registers are not signed, so this is an easy way to tell */
       if (realPowerCT[j] < 0) currentCT[j] *= -1;
@@ -244,7 +260,10 @@ void energy_meter_loop()
       result_json += sprintf(result_json, ",\"a\":%.4f", currentCT[j]);
       result_json += sprintf(result_json, ",\"pf\":%.3f", powerFactorCT[j]);
       result_json += sprintf(result_json, ",\"va\":%.2f", vaPowerCT[j]);
-      result_json += sprintf(result_json, ",\"v\":%.2f}", voltageCT[j]);
+      result_json += sprintf(result_json, ",\"v\":%.2f", voltageCT[j]);
+
+      result_json += sprintf(result_json, ",\"ew\":%.2f", exportEnergyCT[j]);
+      result_json += sprintf(result_json, ",\"iw\":%.2f}", importEnergyCT[j]);
 
       sprintf(result + strlen(result), ",CT%d:", i*NUM_INPUTS+j+1);
       dtostrf(currentCT[j], 2, 4, measurement);
@@ -260,6 +279,14 @@ void energy_meter_loop()
 
       sprintf(result + strlen(result), ",VA%d:", i*NUM_INPUTS+j+1);
       dtostrf(vaPowerCT[j], 2, 2, measurement);
+      strcat(result, measurement);
+
+      sprintf(result + strlen(result), ",ew%d:", i * NUM_INPUTS + j + 1);
+      dtostrf(exportEnergyCT[j], 2, 2, measurement);
+      strcat(result, measurement);
+
+      sprintf(result + strlen(result), ",iw%d:", i * NUM_INPUTS + j + 1);
+      dtostrf(importEnergyCT[j], 2, 2, measurement);
       strcat(result, measurement);
     }
     // Serial.println("");
@@ -288,4 +315,5 @@ void energy_meter_loop()
   */
   display.display();
 #endif
+  Serial.println(input_json);
 }

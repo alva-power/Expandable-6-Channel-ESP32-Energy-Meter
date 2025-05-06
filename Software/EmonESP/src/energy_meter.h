@@ -42,7 +42,7 @@
    135 for 50 hz 6 channel meter
 */
 
-#define LINE_FREQ_DEFAULT 4231
+#define LINE_FREQ_DEFAULT 0x87
 
 /*
    Sets the current gain to 1x, 2x, or 4x. If your CT has a low current output use 2x or 4x.
@@ -50,7 +50,7 @@
    21 (2x)
    42 (4x)
 */
-#define PGA_GAIN_DEFAULT 0
+#define PGA_GAIN_DEFAULT 42
 
 /*
    For meter <= v1.2:
@@ -58,8 +58,10 @@
       32428 - 12v AC Transformer - Jameco 167151
    For meter > v1.3:
       7305 - 9v AC Transformer - Jameco 157041
+
+      11152 - Tufvassons stunt | should: 11.5V, actual: 13.7V
 */
-#define VOLTAGE_GAIN_DEFAULT 7305
+#define VOLTAGE_GAIN_DEFAULT 11461
 
 /*
  When PGA Gain is set to 0
@@ -70,7 +72,7 @@
   100A/50mA SCT-013-000: 27961
   120A/40mA: SCT-016: 41880
 */
-#define CURRENT_GAIN_DEFAULT 27961
+#define CURRENT_GAIN_DEFAULT 27961 * 1.5 / 4 // 3000:1 vs 2000:1 scaling 1.5x, then /4 for PGA
 
 extern void energy_meter_setup();
 extern void energy_meter_loop();

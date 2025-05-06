@@ -331,19 +331,19 @@ void config_load_settings()
   EEPROM_read_string(EEPROM_MQTT_PASS_START, EEPROM_MQTT_PASS_SIZE, mqtt_pass);
 
   // Calibration settings
-  voltage_cal = EEPROM_read_ushort(EEPROM_CAL_VOLTAGE_START, VOLTAGE_GAIN_DEFAULT);
-  voltage2_cal = EEPROM_read_ushort(EEPROM_CAL_VOLTAGE2_START, VOLTAGE_GAIN_DEFAULT);
-  freq_cal = EEPROM_read_ushort(EEPROM_CAL_FREQ_START, LINE_FREQ_DEFAULT);
+  voltage_cal = VOLTAGE_GAIN_DEFAULT;
+  voltage2_cal = VOLTAGE_GAIN_DEFAULT;
+  freq_cal = LINE_FREQ_DEFAULT;
   for (int i = 0; i < NUM_CHANNELS; i++)
   {
-    EEPROM_read_string(EEPROM_NAME_CT_START + (i*EEPROM_NAME_CT_SIZE), EEPROM_NAME_CT_SIZE, ct_name[i], "ct" + String(i+1));
-    ct_cal[i] = EEPROM_read_ushort(EEPROM_CAL_CT_START + (i*EEPROM_CAL_CT_SIZE), CURRENT_GAIN_DEFAULT);
-    cur_mul[i] = EEPROM_read_float(EEPROM_CUR_MUL_START + (i*EEPROM_CUR_MUL_SIZE), 1.0);
-    pow_mul[i] = EEPROM_read_float(EEPROM_POW_MUL_START + (i*EEPROM_POW_MUL_SIZE), 1.0);
+    ct_name[i], "ct" + String(i + 1);
+    ct_cal[i] = CURRENT_GAIN_DEFAULT;
+    cur_mul[i] = 1.0;
+    pow_mul[i] = 1.0;
   }
   for (int i = 0; i < NUM_BOARDS; i++)
   {
-    gain_cal[i] = EEPROM_read_ushort(EEPROM_CAL_GAIN_START + (i*EEPROM_CAL_GAIN_SIZE), PGA_GAIN_DEFAULT);
+    gain_cal[i] = PGA_GAIN_DEFAULT;
   }
 
   // Configuration flags
