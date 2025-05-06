@@ -81,7 +81,7 @@ void setup()
 
   String modifiedMac = WiFi.macAddress();
   modifiedMac.replace(":", "_");
-  mqtt_device_id = "device_" +  modifiedMac;
+  mqtt_device_id = "device_" + modifiedMac;
 
   // Construct the MQTT topic
   mqtt_topic = "devices/device_" + macAddressMqtt + "/messages/events/";
@@ -152,8 +152,9 @@ void setup()
     {
       config_save_wifi(esid, epass); // Save wifi credentials to EEPROM
       String successMsg = "WIFI_Connected! IP: " + WiFi.localIP().toString();
-      
-    } else {
+    }
+    else
+    {
       String failMsg = "WIFI_ERROR Failed to connect to WiFi";
       Serial.println(failMsg);
       setup_bluetooth();
@@ -162,9 +163,6 @@ void setup()
   // If not start bluetooth.
   // If yes, start wifi
   // if wifi connection failed, change to bluetooth
-
-
-        
 
   delay(200);
 

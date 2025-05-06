@@ -41,22 +41,22 @@
 #define SCREEN_HEIGHT 64 // OLED display height, in pixels
 
 // Declaration for SSD1306 display connected using software SPI (default case):
-#define OLED_DC     0
-#define OLED_CS     16
-#define OLED_RESET  2 //17
+#define OLED_DC 0
+#define OLED_CS 16
+#define OLED_RESET 2 // 17
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &SPI, OLED_DC, OLED_RESET, OLED_CS);
 #endif
 
 unsigned long startMillis;
 unsigned long currentMillis;
-const int period = 1000; //time interval in ms to send data
+const int period = 1000; // time interval in ms to send data
 
 /****** Chip Select Pins ******/
 /*
    Each chip has its own CS pin (2 per board). The main board must be pins 5 and 4.
 */
-const int CS1[NUM_BOARDS] = { 5, 0, 27, 2, 13, 14, 15 };
-const int CS2[NUM_BOARDS] = { 4, 16, 17, 21, 22, 25, 26 };
+const int CS1[NUM_BOARDS] = {5, 0, 27, 2, 13, 14, 15};
+const int CS2[NUM_BOARDS] = {4, 16, 17, 21, 22, 25, 26};
 
 char measurement[16];
 
@@ -67,12 +67,13 @@ ATM90E32 sensor_ic2[NUM_BOARDS]{};
 // -------------------------------------------------------------------
 // SETUP
 // -------------------------------------------------------------------
-void energy_meter_setup() {
+void energy_meter_setup()
+{
   int i;
 
   /*Initialise the ATM90E32 & Pass CS pin and calibrations to its library */
   Serial.println("Start ATM90E32");
-  for (i = 0; i < NUM_BOARDS; i ++)
+  for (i = 0; i < NUM_BOARDS; i++)
   {
     sensor_ic1[i].begin(CS1[i], freq_cal, gain_cal[i] & 0xFF, voltage_cal, ct_cal[i * NUM_INPUTS + 0], ct_cal[i * NUM_INPUTS + 1], ct_cal[i * NUM_INPUTS + 2]);
     sensor_ic2[i].begin(CS2[i], freq_cal, gain_cal[i] & 0xFF, voltage_cal, ct_cal[i * NUM_INPUTS + 0], ct_cal[i * NUM_INPUTS + 1], ct_cal[i * NUM_INPUTS + 2]);
@@ -82,7 +83,8 @@ void energy_meter_setup() {
 
 #ifdef ENABLE_OLED_DISPLAY
   // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
-  if (!display.begin(SSD1306_SWITCHCAPVCC)) {
+  if (!display.begin(SSD1306_SWITCHCAPVCC))
+  {
     Serial.println(F("OLED allocation failed"));
   }
 
@@ -94,7 +96,7 @@ void energy_meter_setup() {
   display.display();
 #endif
 
-  startMillis = millis();  //initial start time
+  startMillis = millis(); // initial start time
 } // end setup
 
 // -------------------------------------------------------------------
@@ -104,17 +106,18 @@ void energy_meter_loop()
 {
   int i, j = 0;
 
-  char * result = input_string;
-  char * result_json = input_json;
+  char *result = input_string;
+  char *result_json = input_json;
 
   /*get the current "time" (actually the number of milliseconds since the program started)*/
   currentMillis = millis();
 
-  if (startMillis == 0) {
+  if (startMillis == 0)
+  {
     startMillis = currentMillis;
     return;
   }
-  if (currentMillis - startMillis < period)  //test whether the period has elapsed
+  if (currentMillis - startMillis < period) // test whether the period has elapsed
   {
     return;
   }
@@ -125,10 +128,10 @@ void energy_meter_loop()
       realPowerCT[NUM_INPUTS], vaPowerCT[NUM_INPUTS], powerFactorCT[NUM_INPUTS],
       importEnergyCT[NUM_INPUTS], exportEnergyCT[NUM_INPUTS];
 
-  unsigned short sys0 = sensor_ic1[0].GetSysStatus0();  //EMMState0
-  unsigned short sys1 = sensor_ic1[0].GetSysStatus1();  //EMMState1
-  unsigned short en0 = sensor_ic1[0].GetMeterStatus0(); //EMMIntState0
-  unsigned short en1 = sensor_ic1[0].GetMeterStatus1(); //EMMInsState1
+  unsigned short sys0 = sensor_ic1[0].GetSysStatus0();  // EMMState0
+  unsigned short sys1 = sensor_ic1[0].GetSysStatus1();  // EMMState1
+  unsigned short en0 = sensor_ic1[0].GetMeterStatus0(); // EMMIntState0
+  unsigned short en1 = sensor_ic1[0].GetMeterStatus1(); // EMMInsState1
 
   unsigned short sys0_2 = sensor_ic2[0].GetSysStatus0();
   unsigned short sys1_2 = sensor_ic2[0].GetSysStatus1();
@@ -170,14 +173,15 @@ void energy_meter_loop()
 
   result_json += sprintf(result_json, "{\"temp\":%.1f,\"freq\":%.2f,\"sensors\":[", temp, freq);
 
-  for (i = 0; i < NUM_BOARDS; i ++)
+  for (i = 0; i < NUM_BOARDS; i++)
   {
-    unsigned short sys0_1 = sensor_ic1[i].GetSysStatus0();  //EMMState0
+    unsigned short sys0_1 = sensor_ic1[i].GetSysStatus0(); // EMMState0
     unsigned short sys0_2 = sensor_ic2[i].GetSysStatus0();
     if (sys0_1 == 65535 || sys0_1 == 0 || sys0_2 == 65535 || sys0_2 == 0)
     {
       /* Print error message if we can't talk to the master board */
-      if (i == 0) DBUGS.println("Error: Not receiving data from the energy meter - check your connections");
+      if (i == 0)
+        DBUGS.println("Error: Not receiving data from the energy meter - check your connections");
       /* If no response, go to next board */
       continue;
     }
@@ -235,17 +239,19 @@ void energy_meter_loop()
     for (j = 0; j < NUM_INPUTS; j++)
     {
       /* determine if negative - current registers are not signed, so this is an easy way to tell */
-      if (realPowerCT[j] < 0) currentCT[j] *= -1;
+      if (realPowerCT[j] < 0)
+        currentCT[j] *= -1;
 
       /* flip sign of power factor if current multiplier is negative */
-      if (cur_mul[i*NUM_INPUTS+j] < 0) powerFactorCT[j] *= -1;
+      if (cur_mul[i * NUM_INPUTS + j] < 0)
+        powerFactorCT[j] *= -1;
 
       /* scale current and power using multipliers */
-      currentCT[j] *=  cur_mul[i*NUM_INPUTS+j];
-      realPowerCT[j] *= pow_mul[i*NUM_INPUTS+j] * cur_mul[i*NUM_INPUTS+j];
+      currentCT[j] *= cur_mul[i * NUM_INPUTS + j];
+      realPowerCT[j] *= pow_mul[i * NUM_INPUTS + j] * cur_mul[i * NUM_INPUTS + j];
 
       /* apparent power is always positive */
-      vaPowerCT[j] *= fabs(pow_mul[i*NUM_INPUTS+j] * cur_mul[i*NUM_INPUTS+j]);
+      vaPowerCT[j] *= fabs(pow_mul[i * NUM_INPUTS + j] * cur_mul[i * NUM_INPUTS + j]);
 
       // Serial.println("I" + String(i) + "_" + String(j) + ":" + String(currentCT[j]) + "A");
 
@@ -254,8 +260,8 @@ void energy_meter_loop()
         result_json += sprintf(result_json, ",");
       }
 
-      result_json += sprintf(result_json, "{\"ct\":%d", i*NUM_INPUTS+j+1);
-      result_json += sprintf(result_json, ",\"name\":\"%s\"", ct_name[i*NUM_INPUTS+j].c_str());
+      result_json += sprintf(result_json, "{\"ct\":%d", i * NUM_INPUTS + j + 1);
+      result_json += sprintf(result_json, ",\"name\":\"%s\"", ct_name[i * NUM_INPUTS + j].c_str());
       result_json += sprintf(result_json, ",\"w\":%.2f", realPowerCT[j]);
       result_json += sprintf(result_json, ",\"a\":%.4f", currentCT[j]);
       result_json += sprintf(result_json, ",\"pf\":%.3f", powerFactorCT[j]);
@@ -265,19 +271,19 @@ void energy_meter_loop()
       result_json += sprintf(result_json, ",\"ew\":%.2f", exportEnergyCT[j]);
       result_json += sprintf(result_json, ",\"iw\":%.2f}", importEnergyCT[j]);
 
-      sprintf(result + strlen(result), ",CT%d:", i*NUM_INPUTS+j+1);
+      sprintf(result + strlen(result), ",CT%d:", i * NUM_INPUTS + j + 1);
       dtostrf(currentCT[j], 2, 4, measurement);
       strcat(result, measurement);
 
-      sprintf(result + strlen(result), ",PF%d:", i*NUM_INPUTS+j+1);
+      sprintf(result + strlen(result), ",PF%d:", i * NUM_INPUTS + j + 1);
       dtostrf(powerFactorCT[j], 2, 3, measurement);
       strcat(result, measurement);
 
-      sprintf(result + strlen(result), ",W%d:", i*NUM_INPUTS+j+1);
+      sprintf(result + strlen(result), ",W%d:", i * NUM_INPUTS + j + 1);
       dtostrf(realPowerCT[j], 2, 2, measurement);
       strcat(result, measurement);
 
-      sprintf(result + strlen(result), ",VA%d:", i*NUM_INPUTS+j+1);
+      sprintf(result + strlen(result), ",VA%d:", i * NUM_INPUTS + j + 1);
       dtostrf(vaPowerCT[j], 2, 2, measurement);
       strcat(result, measurement);
 

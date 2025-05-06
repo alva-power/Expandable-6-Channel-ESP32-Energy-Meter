@@ -29,16 +29,16 @@
 #define NUM_BOARDS 7
 #define NUM_INPUTS 6
 
-#define NUM_CHANNELS (NUM_BOARDS*NUM_INPUTS)
+#define NUM_CHANNELS (NUM_BOARDS * NUM_INPUTS)
 
-//#define ENABLE_OLED_DISPLAY
+// #define ENABLE_OLED_DISPLAY
 
 /*
    The following calibration values can be set here or in the EmonESP interface
    EmonESP values take priority if they are set
 */
 /*
-   4231 for 60 hz 6 channel meter 
+   4231 for 60 hz 6 channel meter
    135 for 50 hz 6 channel meter
 */
 
