@@ -26,7 +26,7 @@
 #ifndef _ENERGY_METER
 #define _ENERGY_METER
 
-#define NUM_BOARDS 7
+#define NUM_BOARDS 6
 #define NUM_INPUTS 6
 
 #define NUM_CHANNELS (NUM_BOARDS * NUM_INPUTS)
@@ -50,7 +50,7 @@
    21 (2x)
    42 (4x)
 */
-#define PGA_GAIN_DEFAULT 42
+#define PGA_GAIN_DEFAULT 0
 
 /*
    For meter <= v1.2:
@@ -61,7 +61,7 @@
 
       11152 - Tufvassons stunt | should: 11.5V, actual: 13.7V
 */
-#define VOLTAGE_GAIN_DEFAULT 11461
+#define VOLTAGE_GAIN_DEFAULT 11269
 
 /*
  When PGA Gain is set to 0
@@ -72,7 +72,7 @@
   100A/50mA SCT-013-000: 27961
   120A/40mA: SCT-016: 41880
 */
-#define CURRENT_GAIN_DEFAULT 27961 * 1.5 / 4 // 3000:1 vs 2000:1 scaling 1.5x, then /4 for PGA
+#define CURRENT_GAIN_DEFAULT 11131
 
 extern void energy_meter_setup();
 extern void energy_meter_loop();

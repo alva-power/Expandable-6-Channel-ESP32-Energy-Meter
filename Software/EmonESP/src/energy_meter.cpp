@@ -55,8 +55,8 @@ const int period = 1000; // time interval in ms to send data
 /*
    Each chip has its own CS pin (2 per board). The main board must be pins 5 and 4.
 */
-const int CS1[NUM_BOARDS] = {5, 0, 27, 2, 13, 14, 15};
-const int CS2[NUM_BOARDS] = {4, 16, 17, 21, 22, 25, 26};
+const int CS1[NUM_BOARDS] = {5, 0, 27, 15, 13, 14};
+const int CS2[NUM_BOARDS] = {4, 16, 17, 26, 22, 25};
 
 char measurement[16];
 
