@@ -2,11 +2,11 @@
 # See all options at https://esphome.io/components/sensor/atm90e32.html
 
 substitutions:
-# Change the disp_name to something you want
-  disp_name: energy-meter
-  friendly_name: "CircuitSetup Energy Meter"
+# Change the disp_name to something you want  
+  disp_name: Energy-Meter
+  friendly_name: CircuitSetup Energy Meter Wifi
 # Interval of how often the power data is updated
-  update_time: 10s
+  update_time: 60s
 
 # Change current_cal to the corresponding CT's that you're using
 # If different CTs per current channel, remove or change "${current_cal}" from 
@@ -32,12 +32,6 @@ substitutions:
   voltage_cal1: '7305'
   voltage_cal2: '7305'
 
-# WHEN CALIBRATION IS ENABLED, calculated values for offset and gain stored in memory take priority over config values
-# to save calculated calibration values, copy them from the logs to your config
-# then use the clear buttons to clear the calibration values from memory
-  offset_calibration: "true"
-  gain_calibration: "true"
-
   main_meter_name1: Meter 1-3
   main_meter_name2: Meter 4-6
   main_meter_id1: meter_main1
@@ -49,12 +43,56 @@ substitutions:
   ct5_name: CT5
   ct6_name: CT6
 
-packages:
-  common: github://CircuitSetup/Expandable-6-Channel-ESP32-Energy-Meter/Software/ESPHome/6chan_common.yaml
+#packages:
+#  common: github://CircuitSetup/Expandable-6-Channel-ESP32-Energy-Meter/Software/ESPHome/6chan_common.yaml
+esphome:
+  name: energy-meter
+  friendly_name: "${friendly_name}"
+  name_add_mac_suffix: true
+  min_version: '2025.5.0'
+  project:
+    name: circuitsetup.6c-energy-meter
+    version: "1.5"
+
+esp32:
+  board: nodemcu-32s
+
+captive_portal:
+
+improv_serial:
+
+logger:
+  level: DEBUG
+
+# Enable OTA updating
+ota:
+  - platform: esphome
+
+web_server:
+  port: 80
+
+spi:
+  interface: software
+  clk_pin: 18
+  miso_pin: 19
+  mosi_pin: 23
+
+time:
+  - platform: homeassistant
+    id: homeassistant_time
+
+dashboard_import:
+  package_import_url: github://CircuitSetup/Expandable-6-Channel-ESP32-Energy-Meter/Software/ESPHome/6chan_main_calibration_beta.yaml
+  import_full_config: false
+
+api:
+
+wifi:
+  # Set up a wifi access point
+  ap:
 
 sensor:
 #IC1
-####
   - platform: atm90e32
     cs_pin: 5
     id: ${main_meter_id1}
@@ -75,8 +113,16 @@ sensor:
         id: ct1Watts
 #        filters:
 #          - multiply: 2
+      reactive_power:
+        name: ${ct1_name} VAR
+      apparent_power:
+        name: ${ct1_name} VA
+      harmonic_power:
+        name: ${ct1_name} Harmonic Power
       power_factor:
         name: ${ct1_name} PF
+      phase_angle:
+        name: ${ct1_name} Phase Angle
       peak_current:
         name: ${ct1_name} Peak Current
       gain_voltage: ${voltage_cal1}
@@ -92,8 +138,16 @@ sensor:
       power:
         name: ${ct2_name} Watts
         id: ct2Watts
+      reactive_power:
+        name: ${ct2_name} VAR
+      apparent_power:
+        name: ${ct2_name} VA
+      harmonic_power:
+        name: ${ct2_name} Harmonic Power
       power_factor:
         name: ${ct2_name} PF
+      phase_angle:
+        name: ${ct2_name} Phase Angle
       peak_current:
         name: ${ct2_name} Peak Current
       gain_voltage: ${voltage_cal1}
@@ -109,8 +163,16 @@ sensor:
       power:
         name: ${ct3_name} Watts
         id: ct3Watts
+      reactive_power:
+        name: ${ct3_name} VAR
+      apparent_power:
+        name: ${ct3_name} VA
+      harmonic_power:
+        name: ${ct3_name} Harmonic Power
       power_factor:
         name: ${ct3_name} PF
+      phase_angle:
+        name: ${ct3_name} Phase Angle
       peak_current:
         name: ${ct3_name} Peak Current
       gain_voltage: ${voltage_cal1}
@@ -126,10 +188,9 @@ sensor:
     line_frequency: 60Hz
     gain_pga: 1X
     update_interval: ${update_time}
-    enable_offset_calibration: ${offset_calibration}
-    enable_gain_calibration: ${gain_calibration}
+    enable_offset_calibration: true
+    enable_gain_calibration: true
 #IC2
-####
   - platform: atm90e32
     cs_pin: 4
     id: ${main_meter_id2}
@@ -145,6 +206,12 @@ sensor:
       power:
         name: ${ct4_name} Watts
         id: ct4Watts
+      reactive_power:
+        name: ${ct4_name} VAR
+      apparent_power:
+        name: ${ct4_name} VA
+      harmonic_power:
+        name: ${ct4_name} Harmonic Power
       power_factor:
         name: ${ct4_name} PF
       phase_angle:
@@ -164,8 +231,16 @@ sensor:
       power:
         name: ${ct5_name} Watts
         id: ct5Watts
+      reactive_power:
+        name: ${ct5_name} VAR
+      apparent_power:
+        name: ${ct5_name} VA
+      harmonic_power:
+        name: ${ct5_name} Harmonic Power
       power_factor:
         name: ${ct5_name} PF
+      phase_angle:
+        name: ${ct5_name} Phase Angle
       peak_current:
         name: ${ct5_name} Peak Current
       gain_voltage: ${voltage_cal2}
@@ -181,8 +256,16 @@ sensor:
       power:
         name: ${ct6_name} Watts
         id: ct6Watts
+      reactive_power:
+        name: ${ct6_name} VAR
+      apparent_power:
+        name: ${ct6_name} VA
+      harmonic_power:
+        name: ${ct6_name} Harmonic Power
       power_factor:
         name: ${ct6_name} PF
+      phase_angle:
+        name: ${ct6_name} Phase Angle
       peak_current:
         name: ${ct6_name} Peak Current
       gain_voltage: ${voltage_cal2}
@@ -199,23 +282,21 @@ sensor:
     line_frequency: 60Hz
     gain_pga: 1X
     update_interval: ${update_time}
-    enable_offset_calibration: ${offset_calibration}
-    enable_gain_calibration: ${gain_calibration}
-
-#Total Amps
-###########
+    enable_offset_calibration: true
+    enable_gain_calibration: true
+        
+#Total Amps   
   - platform: template
-    name: ${friendly_name} Total Amps
+    name: ${disp_name} Total Amps
     id: totalAmps
     lambda: return id(ct1Amps).state + id(ct2Amps).state + id(ct3Amps).state + id(ct4Amps).state + id(ct5Amps).state + id(ct6Amps).state ;
     accuracy_decimals: 2
     unit_of_measurement: A
     device_class: current
-    update_interval: ${update_time}
+    update_interval: ${update_time}         
 #Total Watts
-############
   - platform: template
-    name: ${friendly_name} Total Watts
+    name: ${disp_name} Total Watts
     id: totalWatts
     lambda: return id(ct1Watts).state + id(ct2Watts).state + id(ct3Watts).state + id(ct4Watts).state + id(ct5Watts).state + id(ct6Watts).state ;
     accuracy_decimals: 1
@@ -223,18 +304,35 @@ sensor:
     device_class: power
     update_interval: ${update_time}
 #kWh
-####
   - platform: total_daily_energy
-    name: ${friendly_name} Total kWh
+    name: ${disp_name} Total kWh
     power_id: totalWatts
     filters:
       - multiply: 0.001
     unit_of_measurement: kWh
     device_class: energy
     state_class: total_increasing
+    
+#wifi diagnostic
+  - platform: wifi_signal
+    name: ${disp_name} WiFi
+    id: wifi_signal_db
+    entity_category: diagnostic
 
-# Status Fields
-###############
+  - platform: copy
+    source_id: wifi_signal_db
+    id: wifi_signal_pct
+    name: ${disp_name} WiFi %
+    filters:
+      - lambda: return min(max(2 * (x + 100.0), 0.0), 100.0);
+    unit_of_measurement: "%"
+    entity_category: diagnostic
+
+switch:
+  - platform: restart
+    name: ${disp_name} Restart
+    entity_category: diagnostic
+
 text_sensor:
   - platform: atm90e32
     id: ${main_meter_id1}
@@ -261,42 +359,37 @@ text_sensor:
 #   freq_status:
 #     name: "Frequency Status 2"
 
-# Semi-automatic Calibration Buttons
-####################################
 button:
   - platform: atm90e32
     id: ${main_meter_id1}
-    run_offset_calibration:
-      name: "1. Run ${main_meter_name1} Offset Calibration"
-    clear_offset_calibration:
-      name: "z1. Clear ${main_meter_name1} Offset Calibration"
-    run_power_offset_calibration:
-      name: "2. Run ${main_meter_name1} Power Offset Calibration"
-    clear_power_offset_calibration:
-      name: "z2. Clear ${main_meter_name1} Power Offset Calibration"
     run_gain_calibration:
-      name: "3. Run ${main_meter_name1} Gain Calibration"
+      name: "Run ${main_meter_name1} Gain Calibration"
     clear_gain_calibration:
-      name: "z3. Clear ${main_meter_name1} Gain Calibration"
+      name: "Clear ${main_meter_name1} Gain Calibration"
+    run_offset_calibration:
+      name: "Run ${main_meter_name1} Offset Calibration"
+    clear_offset_calibration:
+      name: "Clear ${main_meter_name1} Offset Calibration"
+    run_power_offset_calibration:
+      name: "Run ${main_meter_name1} Power Offset Calibration"
+    clear_power_offset_calibration:
+      name: "Clear ${main_meter_name1} Power Offset Calibration"
 
   - platform: atm90e32
     id: ${main_meter_id2}
-    run_offset_calibration:
-      name: "1. Run ${main_meter_name2} Offset Calibration"
-    clear_offset_calibration:
-      name: "z1. Clear ${main_meter_name2} Offset Calibration"
-    run_power_offset_calibration:
-      name: "2. Run ${main_meter_name2} Power Offset Calibration"
-    clear_power_offset_calibration:
-      name: "z2. Clear ${main_meter_name2} Power Offset Calibration"
     run_gain_calibration:
-      name: "3. Run ${main_meter_name2} Gain Calibration"
+      name: "Run ${main_meter_name2} Gain Calibration"
     clear_gain_calibration:
-      name: "z3. Clear ${main_meter_name2} Gain Calibration"
+      name: "Clear ${main_meter_name2} Gain Calibration"
+    run_offset_calibration:
+      name: "Run ${main_meter_name2} Offset Calibration"
+    clear_offset_calibration:
+      name: "Clear ${main_meter_name2} Offset Calibration"
+    run_power_offset_calibration:
+      name: "Run ${main_meter_name2} Power Offset Calibration"
+    clear_power_offset_calibration:
+      name: "Clear ${main_meter_name2} Power Offset Calibration"
 
-# V & I Calibration Reference Fields
-####################################
-# Use these to input a known value being measured by a CT or voltage transformer
 number:
   - platform: atm90e32
     id: ${main_meter_id1}

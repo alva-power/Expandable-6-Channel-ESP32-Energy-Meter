@@ -12,53 +12,54 @@ The Expandable 6 Channel ESP32 Energy Meter can read 6 current channels and 2 vo
 
 #### **Features:**
 
-*   Samples 6 current channels & 1 voltage channel (expandable to 2 voltage)
-*   Add-on boards (up to 6) can expand the meter up to 42 current channels & 8 voltage channels
-*   Uses 2 [Microchip ATM90E32AS](https://www.microchip.com/wwwproducts/en/atm90e32as) - 3 current channels & 1 voltage per IC
-*   For each channel the following can also be calculated by the meter:
-    *   Active Power
-    *   Reactive Power
-    *   Apparent Power
-    *   Power Factor
-    *   Frequency
-    *   Temperature
-*   Uses standard current transformer clamps to sample current
-*   22ohm burden resistors per current channel
-*   Includes built-in buck converter to power ESP32 & electronics
-*   2 IRQ interrupts, and 1 Warning output connected to ESP32
-*   Zero crossing outputs
-*   Energy Pulse outputs per IC (4 per IC x2)
-*   SPI Interface
-*   IC Measurement Error: 0.1%
-*   IC Dynamic Range: 6000:1
-*   Current Gain Selection: Up to 4x
-*   Voltage Reference Drift Typical (ppm/°C): 6
-*   ADC Resolution (bits): 16
+* Samples 6 current channels & 1 voltage channel (expandable to 2 voltage)
+* Add-on boards (up to 6) can expand the meter up to 42 current channels & 8 voltage channels
+* Uses 2 [Microchip ATM90E32AS](https://www.microchip.com/wwwproducts/en/atm90e32as) - 3 current channels & 1 voltage per IC
+* For each channel the following can also be calculated by the meter:
+	* Active Power
+	* Reactive Power
+	* Apparent Power
+	* Power Factor
+	* Frequency
+	* Temperature
+* Uses standard current transformer clamps to sample current
+* 22ohm burden resistors per current channel
+* Includes built-in buck converter to power ESP32 & electronics
+* 2 IRQ interrupts, and 1 Warning output connected to ESP32
+* Zero crossing outputs
+* Energy Pulse outputs per IC (4 per IC x2)
+* SPI Interface
+* IC Measurement Error: 0.1%
+* IC Dynamic Range: 6000:1
+* Current Gain Selection: Up to 4x
+* Voltage Reference Drift Typical (ppm/°C): 6
+* ADC Resolution (bits): 16
 
 
 #### **What you'll need:**
 
-*   **Current Transformers** (any combination of the following, or any current transformer that does not exceed 720mV RMS, or 33mA output)
-    *   [SCT-006 20A/25mA Micro](https://circuitsetup.us/product/20a-25ma-micro-current-transformer-yhdc-sct-006-6mm/) (6mm opening - 3.5mm connectors)
-    *   [SCT-010 80A/26.6mA Mini](https://circuitsetup.us/product/80a-26-6ma-mini-current-transformer-yhdc-sct-010-10mm/) (10mm opening - 3.5mm connectors)
-    *   [SCT-013-000 100A/50mA](https://circuitsetup.us/product/100a-50ma-current-transformer-yhdc-sct-013/) (13mm opening - 3.5mm connectors)
-    *   [SCT-016 120A/40mA](https://circuitsetup.us/product/120a-40ma-current-transformer-yhdc-sct-016-with-3-5mm-jack-16mm-opening/) (16mm opening - 3.5mm connectors)
-    *   [Magnelab SCT-0750-100](https://amzn.to/2IF8xnY) (screw connectors - must sever burden resistor connection on the back of the board since they have a built in burden resistor).
-    *   [SCT-024 200A/50mA](https://circuitsetup.us/product/200a-50ma-current-transformer-yhdc-sct-024-24mm/) (24mm opening - 3.5mm connectors)
-    *   Others can also be used as long as they're rated for the amount of power that you are wanting to measure, and have a current output no more than 720mV RMS, or 33mA at peak output.
-*   **AC Transformer (NOT DC):** 
-    *   North America: [Jameco Reliapro 120V to 9V AC-AC](https://circuitsetup.us/product/jameco-ac-to-ac-wall-adapter-transformer-9-volt-1000ma-black-straight-2-5mm-female-plug/) or 12v. The positive pin must be 2.5mm (some are 2.1)
-    *   Europe: 240V to 9V or 12V AC-AC at least 500mA - [See a list of some recommended transformers here](https://learn.openenergymonitor.org/electricity-monitoring/voltage-sensing/different-acac-power-adapters)
-*   **ESP32** (choose one):
-    *   [NodeMCU 32s](https://circuitsetup.us/product/nodemcu-32s-esp32-esp-wroom-32-development-board/)
-    *   [Espressif ESP32-DevKitC-32E](https://amzn.to/3zRmY7x)
-    *   [Espressif ESP32-DevKitC-VIE](https://amzn.to/3Ngp2c9) if you need better wifi reception.
-    *   Anything else with the same pinouts as the above, which are usually 19 pins per side with 3v3 in the upper left & CLK in the lower right
-*   **Software** (choose one):
-    *   Our custom version of [EmonESP](https://github.com/CircuitSetup/Expandable-6-Channel-ESP32-Energy-Meter/tree/master/Software/EmonESP) and the [ATM90E32](https://github.com/CircuitSetup/ATM90E32) Arduino library
-    *   The current release of [ESPHome.](https://esphome.io/components/sensor/atm90e32.html) Details on [integrating with Home Assistant are located here.](https://github.com/CircuitSetup/Expandable-6-Channel-ESP32-Energy-Meter#esphomehome-assistant) and [here on ESPHome.io](https://esphome.io/components/sensor/atm90e32.html). [More examples of configs are located here.](https://github.com/CircuitSetup/Expandable-6-Channel-ESP32-Energy-Meter/tree/master/Software/ESPHome)
-    *   Libraries for [CircuitPython](https://github.com/BitKnitting/CircuitSetup_CircuitPython) & [MicroPython](https://github.com/BitKnitting/CircuitSetup_micropython)
-    
+* **Current Transformers** (any combination of the following, or any current transformer that does not exceed 720mV RMS, or 33mA output)
+	* [SCT-006 20A/25mA Micro](https://circuitsetup.us/product/20a-25ma-micro-current-transformer-yhdc-sct-006-6mm/) (6mm opening - 3.5mm connectors)
+	* [SCT-010 80A/26.6mA Mini](https://circuitsetup.us/product/80a-26-6ma-mini-current-transformer-yhdc-sct-010-10mm/) (10mm opening - 3.5mm connectors)
+	* [SCT-013-000 100A/50mA](https://circuitsetup.us/product/100a-50ma-current-transformer-yhdc-sct-013/) (13mm opening - 3.5mm connectors)
+	* [SCT-016 120A/40mA](https://circuitsetup.us/product/120a-40ma-current-transformer-yhdc-sct-016-with-3-5mm-jack-16mm-opening/) (16mm opening - 3.5mm connectors)
+	* [Magnelab SCT-0750-100](https://amzn.to/2IF8xnY) (screw connectors - must sever burden resistor connection on the back of the board since they have a built in burden resistor).
+	* [SCT-024 200A/50mA](https://circuitsetup.us/product/200a-50ma-current-transformer-yhdc-sct-024-24mm/) (24mm opening - 3.5mm connectors)
+	* Others can also be used as long as they're rated for the amount of power that you are wanting to measure, and have a current output no more than 720mV RMS, or 33mA at peak output.
+* **AC Transformer (NOT DC):** 
+	* North America: [Jameco Reliapro 120V to 9V AC-AC](https://circuitsetup.us/product/jameco-ac-to-ac-wall-adapter-transformer-9-volt-1000ma-black-straight-2-5mm-female-plug/) or 12v. The positive pin must be 2.5mm (some are 2.1)
+	* Europe: 240V to 9V or 12V AC-AC at least 500mA - [See a list of some recommended transformers here](https://learn.openenergymonitor.org/electricity-monitoring/voltage-sensing/different-acac-power-adapters)
+* **ESP32** (choose one):
+	* [NodeMCU 32s](https://circuitsetup.us/product/nodemcu-32s-esp32-esp-wroom-32-development-board/)
+	* [Espressif ESP32-DevKitC-32E](https://amzn.to/3zRmY7x)
+	* [Espressif ESP32-DevKitC-VIE](https://amzn.to/3Ngp2c9) if you need better wifi reception.
+	* Anything else with the same pinouts as the above, which are usually 19 pins per side with 3v3 in the upper left & CLK in the lower right
+  	* Ethernet: [CircuitSetup ESP32S3 Ethernet Adapter](https://circuitsetup.us/product/6-channel-energy-meter-to-lilygo-t-eth-lite-esp32s3-ethernet-adapter/) & the [Lilygo T-ETH-Lite ESP32S3](https://www.lilygo.cc/products/t-eth-lite?variant=43120880779445) (for ESPHome only, at the moment)
+* **Software** (choose one):
+	* Our custom version of [EmonESP](https://github.com/CircuitSetup/Expandable-6-Channel-ESP32-Energy-Meter/tree/master/Software/EmonESP) and the [ATM90E32](https://github.com/CircuitSetup/ATM90E32) Arduino library
+	* The current release of [ESPHome.](https://esphome.io/components/sensor/atm90e32.html) Details on [integrating with Home Assistant are located here.](https://github.com/CircuitSetup/Expandable-6-Channel-ESP32-Energy-Meter#esphomehome-assistant) and [here on ESPHome.io](https://esphome.io/components/sensor/atm90e32.html). [More examples of configs are located here.](https://github.com/CircuitSetup/Expandable-6-Channel-ESP32-Energy-Meter/tree/master/Software/ESPHome)
+	* Libraries for [CircuitPython](https://github.com/BitKnitting/CircuitSetup_CircuitPython) & [MicroPython](https://github.com/BitKnitting/CircuitSetup_micropython)
+    
 
 ### **Setting up the Meter**
 
@@ -88,31 +89,21 @@ Add-on boards (up to 6) can expand the main energy meter up to 42 current channe
 
 The **add-on board** allows the CS pin to be selected based on the jumper settings at the bottom of the board. This is so multiple add-on boards can be used - up to 6 maximum. Do NOT select more than one CS pin per bank. 
 The CS pins can be:
-  * CT1-CT3 (CS):
-    * For v1.3 and under:
-      * 0
-      * 2 (*make sure that an on board LED is not used for IO2 on the ESP32) 
-      * 12 (*will cause ESP32 to not boot if used)
-      * 13
-      * 14
-      * 15
-    * For v1.4 and above:
-      * 0
-      * 27
-      * 35 (do not use - it will not work correctly)
-      * 13
-      * 14
-      * 15
-    * For v1.4 rev1 and above:
-      * 35 is changed to 2 (may prevent the ESP32 from being programmed - disconnect jumper if so)
-  * CT4-CT6 (CS2):
-    * 16
-    * 17
-    * 21
-    * 22
-    * 25
-    * 26
-    
+* CT1-CT3 (CS):
+	* 0
+	* 27
+	* 2 (may prevent the ESP32 from being programmed - disconnect jumper if so)
+	* 13
+	* 14
+	* 15
+* CT4-CT6 (CS2):
+	* 16
+	* 17
+	* 21
+	* 22
+	* 25
+	* 26
+    
 ![Expandable 6 Channel ESP32 Energy Meter Add-on Diagram](https://raw.githubusercontent.com/CircuitSetup/Expandable-6-Channel-ESP32-Energy-Meter/master/Images/6-channel-add-on_diagram.png)
 
 #### **Calibrating Current Sensors & Voltage (AC Transformer)** 
@@ -120,21 +111,18 @@ The CS pins can be:
 [or here for a video](https://youtu.be/BOgy6QbfeZk?t=1261)
 
 ##### **Common Calibration Values**
- * Current Transformers:
-    * 20A/25mA SCT-006: 11143
-    * 30A/1V SCT-013-030: 8650
-    * 50A/1V SCT-013-050: 15420
-    * 80A/26.6mA SCT-010: 41660
-    * 100A/50ma SCT-013-000: 27518
-    * 120A/40mA: SCT-016: 41787
-    * 200A/100mA SCT-024: 27518
-    * 200A/50mA SCT-024: 55036
+* Current Transformers:
+	* 20A/25mA SCT-006: 11143
+	* 30A/1V SCT-013-030: 8650
+	* 50A/1V SCT-013-050: 15420
+	* 80A/26.6mA SCT-010: 41660
+	* 100A/50ma SCT-013-000: 27518
+	* 120A/40mA: SCT-016: 41787
+	* 200A/100mA SCT-024: 27518
+	* 200A/50mA SCT-024: 55036
 * AC Transformers
-    * Jameco 9VAC Transformer 157041: 
-       * For meter versions: 
-         * v1.3 or greater: 7305
-         * v1.2: 42620
-         
+	* Jameco 9VAC Transformer 157041: 7305
+         
 #### **Measuring Power & Other Metering Values**
 The Expandable 6 Channel ESP32 Energy Meter uses 2 ATM90E32AS ICs. Each IC has 3 voltage channels and 3 current channels. In order for power metering data to be calculated internally, each current channel must have a reference voltage. If the voltage is out of phase with the current, then the current and power will read as negative, affecting the power factor and power calculations. If you have a split single phase or dual phase setup, the solution is to turn around the current transformer on the wire.
 
@@ -144,15 +132,15 @@ v1.2 & v1.3 have JP8-JP11 on the back of the board, that would allow all voltage
 
 v1.4 removed JP8-JP11, and has voltage channels connected internally on the pcb. 
 
-#### **Measuring Dual Pole (240V) Circuits**
-For split single phase applications, dual pole circuits have 2 hot wires that total 240V (usually red and black in newer buildings). In most cases both poles are used equally, but in others there may be electronics in the applicance that use only 1 pole. 
+#### **Measuring Dual Pole (240V) Circuits (split single phase)**
+For split single phase applications, dual pole circuits have 2 hot wires that total 240V (usually red and black in newer buildings). In most cases both poles are used equally, but in others there may be electronics in the appliance that use only 1 pole. 
 There are 3 different options for measuring these circuits:
-- Monitor 1 phase with 1 CT, and double the current output in software (least accurate) See details on how to do this in [ESPHome here](https://esphome.io/components/sensor/index.html#offset-multiply).
-- Use 2 CTs to monitor each hot wire on the circuit (if you are monitoring 1 voltage, they should be in opposite directions from eachother)
-- If you have enough wire, and the CT is large enough, run both hot wires through 1 CT in opposite directions
+- Monitor 1 phase with 1 CT, and double the current & power output in software (least accurate) An example of how to do this in ESPHome is the same as the [multiply filter in this example config](https://github.com/CircuitSetup/Expandable-6-Channel-ESP32-Energy-Meter/blob/master/Software/ESPHome/6chan_energy_meter_main_board.yaml#L84).
+- Use 2 CTs to monitor each hot wire on the circuit (if you are monitoring 1 voltage, the CTs should be in opposite directions from eachother)
+- If the circuit has enough wire coming out of the breaker, and the CT is large enough, run both hot wires through 1 CT in opposite directions
 
 #### **Measuring A Second Voltage**
-The holes labelled VA2 next to the power plug on the meter main board, and in the bottom right of the add-on board are for measuring a second voltage. To do this you must:
+The holes labeled VA2 next to the power plug on the meter main board, and in the bottom right of the add-on board are for measuring a second voltage. To do this you must:
 * Sever (with a knife) JP12 and JP13 on the back of the board for v1.3+, or JP7 for prior versions
 * Use a second AC transformer, ideally one identical to the primary
 * Plug in the second AC transformer to an outlet on the opposite phase to the primary
@@ -176,7 +164,7 @@ Similar to the above for measuring a second voltage, once JP12 and JP13 are seve
 
 The transformers should be calibrated individually for greater accuracy.
 
-Alternately, you can use *2 add-on boards* and connect 1 transformer to to each board:
+Alternatively, you can use *2 add-on boards* and connect 1 transformer to each board:
 * Locate the bottom most pins (i.e. those which the ESP32 does *not* plug into), marked "VA-" and "VA+" for each add-on board. These normally provide the voltage reference to the add-on board from the main board
 * Cut these pins off
 * Solder a connector, or the wires from a transformer, in the bottom right holes marked "VA2" on the add-on boards. Polarity does not matter (if you are getting negative current readings, reverse the CT on the wire)
@@ -187,21 +175,34 @@ On 3-phase systems, a current transformer that's connected to a phase not in pha
 ### **Setting Up Software**
 #### **EmonESP/EmonCMS**
 EmonESP is used to send energy meter data to a [local install of EmonCMS](https://github.com/emoncms/emoncms), or [emoncms.org](https://emoncms.org/). Data can also be sent to a MQTT broker through this. EmonCMS has Android and IOS apps.
-[The ESP32 sofware for EmonESP is located here](https://github.com/CircuitSetup/Expandable-6-Channel-ESP32-Energy-Meter/tree/master/Software/EmonESP), and can be flash to an ESP32 using the [Arduino IDE](https://www.arduino.cc/en/software) or [PlatformIO](https://platformio.org/). See [details on setup here.](https://github.com/CircuitSetup/Split-Single-Phase-Energy-Meter/tree/master/Software/EmonESP)
+[The ESP32 software for EmonESP is located here](https://github.com/CircuitSetup/Expandable-6-Channel-ESP32-Energy-Meter/tree/master/Software/EmonESP), and can be flash to an ESP32 using the [Arduino IDE](https://www.arduino.cc/en/software) or [PlatformIO](https://platformio.org/). See [details on setup here.](https://github.com/CircuitSetup/Split-Single-Phase-Energy-Meter/tree/master/Software/EmonESP)
 
 #### **ESPHome/Home Assistant**
 [ESPHome](https://esphome.io/components/sensor/atm90e32.html) can be loaded on an ESP32 to seamlessly integrate energy data into [Home Assistant](https://www.home-assistant.io/). Energy data can then be saved in InfluxDB and displayed with Grafana. At the same time, the energy data can also be used for automations in Home Assistant. 
 
 A [new feature in Home Assistant allows you to monitor electricity usage](https://www.home-assistant.io/blog/2021/08/04/home-energy-management/) [directly in Home Assistant](https://demo.home-assistant.io/#/energy). You can also track usage of individual devices and/or solar using the 6 channel meter!
 
-##### **Flashing ESPHome**
-- If you have Home Assistant installed, go to **Settings** in the left menu, click **Add-ons**, then **Add-on Store** (bottom right blue button), Search for **ESPHome** - Click on **Install**
-- Click on **Open Web UI**
+##### **Installing on Home Assistant**
+- If you have Home Assistant installed, click the button below OR go to **Settings** in the left menu, click **Add-ons**, then **Add-on Store** (bottom right blue button), Search for **ESPHome** - Click on **Install**
+
+[![Install ESPHome Add-on](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start?domain=esphome)
 
 ![ESPHome add-on](https://raw.githubusercontent.com/CircuitSetup/Expandable-6-Channel-ESP32-Energy-Meter/master/Images/esphome_add-on_install.png)
 
+##### **Flashing ESPHome to your ESP32**
+###### **Method 1**
+- The easiest way to load ESPHome is to use [ESPHome Web](http://web.esphome.io/]
+- Connect your ESP32 to your computer via USB port
+- Click on **Connect** in ESPHome Web
+- Choose the COM port for your ESP32 (if the ESP32 does not connect, check that you're using the correct COM port)
+- Click on **Prepare For First Use**, then **Install** - the base ESPHome firmware will upload to the ESP32
+- If you get an error about WiFi Serial failing, that is okay - go to the next step. If not, enter your WiFi credentials
+- Connect to the ESP32 via WiFi using your phone or laptop - the network will look something like **esphome-web-xxxxxx**
+- Enter your WiFi Credentials. 
+
+##### **Method 2**
 - Click the green + circle in the bottom right to add a new node
-- Fill in the name (for exmaple 'energy_meter', and device type as **NodeMCU-32S** or **Generic ESP32**
+- Fill in the name (for example 'energy_meter', and device type as **NodeMCU-32S** or **Generic ESP32**
 - Add your wifi details and click **Submit** to create the node
 - ESPHome will compile - when it is complete click **Download Binary**
 
@@ -219,7 +220,9 @@ A [new feature in Home Assistant allows you to monitor electricity usage](https:
 - In Home Assistant go to **Settings > Devices & Services**, and click on the blue **Configure** for ESPHome. It should be highlighted as **Discovered**
 
 ##### **Loading the Energy Meter Config**
-- Choose an exmaple config that best suits your energy meter setup [here on the ESPHome site](https://esphome.io/components/sensor/atm90e32.html), and [here for some more advanced configurations](https://github.com/CircuitSetup/Expandable-6-Channel-ESP32-Energy-Meter/tree/master/Software/ESPHome)
+- Go to Home Assistant, and click on **ESPHome Builder** in the left menu
+- At the top, there should be a header saying a new device was discovered, click on that and **Take Control**
+- Choose an example config that best suits your energy meter setup [from here](https://github.com/CircuitSetup/Expandable-6-Channel-ESP32-Energy-Meter/tree/master/Software/ESPHome). Descriptions for options and more sensors available [here on the ESPHome site](https://esphome.io/components/sensor/atm90e32.html) 
 - In the Home Assistant/ESPHome Web UI, click **Edit** for the Energy Meter Node
 - Copy/Paste the example config, change any applicable settings, like the current calibrations to the current transformers that you use, and click **Save**
 
@@ -250,15 +253,15 @@ To display data in the Home Assistant Energy Dashboard you must be using ESPHome
 ##### **For Total Energy Consumption**
 ```yaml
 #Total kWh
-  - platform: total_daily_energy
-    name: ${disp_name} Total kWh
-    power_id: totalWatts
-    filters:
-      - multiply: 0.001
-    unit_of_measurement: kWh
+  - platform: total_daily_energy
+    name: ${disp_name} Total kWh
+    power_id: totalWatts
+    filters:
+      - multiply: 0.001
+    unit_of_measurement: kWh
 time:
-  - platform: sntp
-    id: sntp_time 
+  - platform: sntp
+    id: sntp_time 
 ```
 Where ```totalWatts``` is the sum of all watt calculations on the meter. [See an example of this here.](https://github.com/CircuitSetup/Expandable-6-Channel-ESP32-Energy-Meter/blob/master/Software/ESPHome/6chan_energy_meter_main_board.yaml) In the example, this was done with a [lambda template](https://github.com/CircuitSetup/Expandable-6-Channel-ESP32-Energy-Meter/blob/ae0c42b86ec5faa7bc923f488fb5cc09cf5517eb/Software/ESPHome/6chan_energy_meter_main_board.yaml#L157).
 
@@ -268,21 +271,21 @@ The same can be done as above to track solar panel use and export. The current c
 [See this example for how you could set this up with the 6 Channel Meter.](https://github.com/CircuitSetup/Expandable-6-Channel-ESP32-Energy-Meter/blob/master/Software/ESPHome/6chan_energy_meter_house_solar_ha_kwh.yaml)
 
 ##### **For Individual Device/Circuit Tracking**
-To do this you must have power calulated by the meter, or a lambda template that calculates watts per circuit. Then can use a kWh platform for each of the current channels on the 6 channel energy meter. For example:
+To do this you must have power calculated by the meter, or a lambda template that calculates watts per circuit. Then can use a kWh platform for each of the current channels on the 6 channel energy meter. For example:
 ```yaml
 #CT1 kWh
-  - platform: total_daily_energy
-    name: ${disp_name} CT1 Watts Daily
-    power_id: ct1Watts
-    filters:
-      - multiply: 0.001
-    unit_of_measurement: kWh
+  - platform: total_daily_energy
+    name: ${disp_name} CT1 Watts Daily
+    power_id: ct1Watts
+    filters:
+      - multiply: 0.001
+    unit_of_measurement: kWh
 ```
 ```ct1Watts``` references the id of the watt calculation. In the [example config](https://github.com/CircuitSetup/Expandable-6-Channel-ESP32-Energy-Meter/blob/ae0c42b86ec5faa7bc923f488fb5cc09cf5517eb/Software/ESPHome/6chan_energy_meter_main_board.yaml#L79), this is:
 ```yaml
-      power:
-        name: ${disp_name} CT1 Watts
-        id: ct1Watts
+      power:
+        name: ${disp_name} CT1 Watts
+        id: ct1Watts
 ```
 
 ##### **Setup in Home Assistant**
@@ -307,33 +310,35 @@ To do this you must have power calulated by the meter, or a lambda template that
 ##
 **Q:** I'm getting a negative value on one current channel. What is going on? 
 
-**A:** This usually means that the CT is on the wire backwords - just turn it around! 
+**A:** This usually means that the CT is on the wire backwards - just turn it around! If all CT readings are negative, you can flip the AC transformer around in the plug.
 
 ##
 **Q:** I'm getting a small negative value when there is no load at all, but a positive value otherwise. What is going on?
 
 **A:** This is caused by variances in resistors and current transformers. You can either calibrate the current transformers to the meter, or add this lambda section to only allow positive values for a current channel:
 ```yaml
-  - platform: template
-    name: ${disp_name} CT1 Watts Positive
-    id: ct1WattsPositive
-    lambda: |-
-      if (id(ct1Watts).state < 0) {
-        return 0;
-      } else {
-        return id(ct1Watts).state ;
-      }
-    accuracy_decimals: 2
-    unit_of_measurement: W
-    icon: "mdi:flash-circle"
-    update_interval: ${update_time}
+  - platform: template
+    name: ${disp_name} CT1 Watts Positive
+    id: ct1WattsPositive
+    lambda: |-
+      if (id(ct1Watts).state < 0) {
+        return 0;
+      } else {
+        return id(ct1Watts).state ;
+      }
+    accuracy_decimals: 2
+    unit_of_measurement: W
+    icon: "mdi:flash-circle"
+    update_interval: ${update_time}
 ```
 Then for your total watts calculation, use ct1WattsPositive
+
+Calibrating voltage offset and current offset will correct this issue as well.
 
 ##
 **Q:** The CT wires are not long enough. Can I extend them? 
 
-**A:** Yes, you absolutely can! Something like a headphone extension or even an ethernet wire can be used (if you don't mind doing some wiring). It is recommended to calibrate the CTs after adding any particularly long entension.
+**A:** Yes, you absolutely can! Something like a headphone extension or even an ethernet wire can be used (if you don't mind doing some wiring). It is recommended to calibrate the CTs after adding any particularly long extension.
 
 ##
 **Q:** Can I use this CT with the 6 channel meter?
@@ -351,33 +356,41 @@ Then for your total watts calculation, use ct1WattsPositive
 **A:** There is a built in burden resistor if the output is rated in volts. In this case the corresponding jumper on the rear of the meter should be severed.
 
 ##
-**Q:** When using more than 3 add-on boards, ESPHome does not work.
+**Q:** Can I connect the meter to ethernet?
 
-**A:**
-ESPHome will run out of stack memory after using more than 15 sensors, or so. You will have to increase the stack memory size before compiling. [See details here.](https://github.com/esphome/issues/issues/855#issuecomment-903296681)
+**A:** Yes! We have an [adapter availble](https://circuitsetup.us/product/6-channel-energy-meter-to-lilygo-t-eth-lite-esp32s3-ethernet-adapter/) to use the Lilygo T-ETH-Lite ESP32S3 with the 6 channel energy meter. An example configuration is [available here](/blob/master/Software/ESPHome/6chan_energy_meter_main_ethernet.yaml).
 
-UPDATE: You can replace the esphome: definition in your ESPHome config to solve this issue with the following:
-```yaml
-esphome:
-  name: 6chan_energy_meter
-  platformio_options:
-    build_flags: 
-      - -DCONFIG_ARDUINO_LOOP_STACK_SIZE=32768
+##
+**Q:** How do I set up a solar configuration and power that is returned to the grid?
 
-esp32:
-  board: nodemcu-32s
-  variant: esp32
-  framework:
-    type: arduino
-    version: 2.0.2
-    source: https://github.com/espressif/arduino-esp32.git#2.0.2
-    platform_version: https://github.com/platformio/platform-espressif32.git#feature/arduino-upstream
+**A:** This is assuming you are measuring mains and the circuit that connects your soloar grid to your panel, and the CTs are reading negative when exporting power to the grid. [See this ESPHome example config](/blob/master/Software/ESPHome/6chan_energy_meter_house_solar_ha_kwh.yaml).
+
+##
+**Q:** How can I do calculations across 2 power sensors from 2 different meters (2 or more ESP32's)?
+
+**A:** The easiest way to do the math between 2 meters would be to [create a helper in Home Assistant](https://my.home-assistant.io/redirect/config_flow_start?domain=template). _Create Helper > Template > Template a sensor_
+
+Then for State template enter:
 ```
+{% set meter1 = states(‘sensor.energy_meter1_total_watts’) | float(0) %}
+{% set meter2 = states(‘sensor.energy_meter2_total_watts’) | float(0) %}
+{{ meter1 – meter2 }}
+```
+Where ```energy_meterX_total_watts``` is the name of the total_watts for that meter as defined in the ESPhome config. If you start typing after ‘sensor.’ it should pop up.
+
+Unit of measurement: W
+Device class: Power
+State class: Measurement
+Device: The primary meter
+
+The same can be repeated for Amps, if you want.
+
+The output will then be available in the energy dashboard as ```sensor.helper_name```.
+
 
 ### **More resources:**
 * [How to flash ESPHome to your ESP32](https://esphome.io/guides/getting_started_hassio.html)
 * [Digiblur video of energy meter calibration and setup process of ESPHome](https://www.youtube.com/watch?v=BOgy6QbfeZk)
 * [DIY Home Power & Solar Energy Dashboard - Home Assistant w/ ESPHome](https://www.youtube.com/watch?v=n2XZzciz0s4)
 * [TH3D video with add-on board](https://www.youtube.com/watch?v=zfB4znO6_Z0)
-
 
