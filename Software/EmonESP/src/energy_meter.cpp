@@ -239,19 +239,24 @@ void energy_meter_loop()
     for (j = 0; j < NUM_INPUTS; j++)
     {
       /* determine if negative - current registers are not signed, so this is an easy way to tell */
-      if (realPowerCT[j] < 0)
-        currentCT[j] *= -1;
+
+      // Do not override in code. Let consumer see and correct connection instead
+      // if (realPowerCT[j] < 0)
+      //  currentCT[j] *= -1;
 
       /* flip sign of power factor if current multiplier is negative */
-      if (cur_mul[i * NUM_INPUTS + j] < 0)
-        powerFactorCT[j] *= -1;
+      // Unused, cur_mul is hardcoded to 0
+      // if (cur_mul[i * NUM_INPUTS + j] < 0)
+      //  powerFactorCT[j] *= -1;
 
       /* scale current and power using multipliers */
-      currentCT[j] *= cur_mul[i * NUM_INPUTS + j];
-      realPowerCT[j] *= pow_mul[i * NUM_INPUTS + j] * cur_mul[i * NUM_INPUTS + j];
+      // cur_mul / pow_mul is hardcoded to 0.
+      // currentCT[j] *= cur_mul[i * NUM_INPUTS + j];
+      // realPowerCT[j] *= pow_mul[i * NUM_INPUTS + j] * cur_mul[i * NUM_INPUTS + j];
 
       /* apparent power is always positive */
-      vaPowerCT[j] *= fabs(pow_mul[i * NUM_INPUTS + j] * cur_mul[i * NUM_INPUTS + j]);
+      // Should always be positive multiplication (always multiplication with +N..)
+      // vaPowerCT[j] *= fabs(pow_mul[i * NUM_INPUTS + j] * cur_mul[i * NUM_INPUTS + j]);
 
       // Serial.println("I" + String(i) + "_" + String(j) + ":" + String(currentCT[j]) + "A");
 
